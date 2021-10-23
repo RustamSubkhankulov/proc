@@ -1,0 +1,17 @@
+
+
+Current position: 020 Command name: INIT       Written bytes: 01 
+
+Current position: 021 Command name: IN         Written bytes: 09 
+
+Current position: 022 Command name: POP        Written bytes: 47 Written bytes: 01 
+
+Current position: 024 Command name: IN         Written bytes: 09 
+
+Current position: 025 Command name: POP        Written bytes: c7 Written bytes: 01 
+
+Current position: 027 Command name: PUSH       Written bytes: c6 Written bytes: 01 
+
+Current position: 029 Command name: OUT        Written bytes: 08 
+
+Current position: 02a Command name: HLT        Written bytes: 00 

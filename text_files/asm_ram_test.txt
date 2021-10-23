@@ -1,0 +1,8 @@
+INIT
+IN 
+POP ax 
+IN
+POP [ax]
+PUSH [ax]
+OUT
+HLT
