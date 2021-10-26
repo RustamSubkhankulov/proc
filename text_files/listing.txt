@@ -1,17 +1,31 @@
 
-
 Current position: 020 Command name: INIT       Written bytes: 01 
 
 Current position: 021 Command name: IN         Written bytes: 09 
 
-Current position: 022 Command name: POP        Written bytes: 47 Written bytes: 01 
+Current position: 022 Command name: JMP        Written bytes: 0b 
 
-Current position: 024 Command name: IN         Written bytes: 09 
+ Argument value: ax  Written bytes: 01 
+Current position: 027 Command name: POP        Written bytes: 47 
 
-Current position: 025 Command name: POP        Written bytes: c7 Written bytes: 01 
+Current position: 029 Command name: IN         Written bytes: 09 
 
-Current position: 027 Command name: PUSH       Written bytes: c6 Written bytes: 01 
+ Argument value: ax  Written bytes: 01 
+Current position: 02a Command name: PUSH       Written bytes: c6 
 
-Current position: 029 Command name: OUT        Written bytes: 08 
+Current position: 02c Command name: IN         Written bytes: 09 
 
-Current position: 02a Command name: HLT        Written bytes: 00 
+ Argument value: ax  Written bytes: 01 
+Current position: 02d Command name: POP        Written bytes: c7 
+
+ Argument value: ax  Written bytes: 01 
+Current position: 02f Command name: PUSH       Written bytes: c6 
+
+Current position: 031 Command name: ADD        Written bytes: 02 
+
+ Argument value: ax  Written bytes: 01 
+Current position: 032 Command name: PUSH       Written bytes: 46 
+
+Current position: 034 Command name: OUT        Written bytes: 08 
+
+Current position: 035 Command name: HLT        Written bytes: 00 

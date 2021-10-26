@@ -1,8 +1,16 @@
-INIT
-IN 
-POP ax 
-IN
-POP [ax]
-PUSH [ax]
-OUT
-HLT
+    INIT
+    IN 
+JMP: CHLENI
+    POP ax 
+    IN 
+    PUSH [ax]
+NIGGERS:           
+    IN
+    POP [ax] 
+HUI:
+    PUSH [ax] 
+    ADD
+CHLENI:
+    PUSH ax
+    OUT
+    HLT
