@@ -487,7 +487,7 @@ int _PROC_PUSH(procstruct* procstruct, unsigned char oper_code, FUNC_FILE_LINE_P
         if (reg_number < 0 || reg_number > REGISTER_SIZE - 1)
             set_and_process_err(INV_REGISTER_NUMBER);
 
-        if (oper_code & ~REGISTER_MASK == RAM_MASK) {
+        if ((oper_code & ~REGISTER_MASK) == RAM_MASK) {
             
             if (procstruct->regist[reg_number] > RAM_SIZE)
                 set_and_process_err(RAM_INV_ADDRESS);
@@ -511,7 +511,7 @@ int _PROC_PUSH(procstruct* procstruct, unsigned char oper_code, FUNC_FILE_LINE_P
         elem_t value = *(elem_t*)procstruct->ip;
         procstruct->ip += sizeof(elem_t);
 
-        if (oper_code & ~IMM_MASK == RAM_MASK) {
+        if ((oper_code & ~IMM_MASK) == RAM_MASK) {
 
             if (value > RAM_SIZE)
                 set_and_process_err(RAM_INV_ADDRESS);
@@ -560,7 +560,7 @@ int _PROC_POP(procstruct* procstruct, unsigned char oper_code, FUNC_FILE_LINE_PA
         if (reg_number < 0 || reg_number > REGISTER_SIZE - 1)
             set_and_process_err(INV_REGISTER_NUMBER);
         
-        if (oper_code & ~REGISTER_MASK == RAM_MASK) {
+        if ((oper_code & ~REGISTER_MASK) == RAM_MASK) {
 
             if (procstruct->regist[reg_number] > RAM_SIZE)
                 set_and_process_err(RAM_INV_ADDRESS);
@@ -583,7 +583,7 @@ int _PROC_POP(procstruct* procstruct, unsigned char oper_code, FUNC_FILE_LINE_PA
         elem_t value = *(elem_t*)procstruct->ip;
         procstruct->ip += sizeof(elem_t);
 
-        if (oper_code & ~IMM_MASK == RAM_MASK) {
+        if ((oper_code & ~IMM_MASK) == RAM_MASK) {
 
             if (value > RAM_SIZE)
                 set_and_process_err(RAM_INV_ADDRESS);
@@ -637,6 +637,8 @@ int _proc_final_check(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
         procstruct->header.register_args_number)
 
         set_and_process_err(INV_REGISTER_ARGS_NUMBER);
+
+    printf(" \n \n proc %d header %d \n",procstruct->ram_using_commands_number, procstruct->header.ram_using_commands_number);
 
     if (procstruct->ram_using_commands_number !=
         procstruct->header.ram_using_commands_number)
