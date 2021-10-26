@@ -71,11 +71,21 @@ enum operations {
 
 #define ASM_MAX_CODE_SIZE 200
 
+#define START_LABELS_NUMBER 10
+
+#define UD_JUMPS_NUMBER 10
+
+#define STRING_JUMPS_NUMBER 10
+
 #define OPERATION_NAME_BUF_SIZE 10
 
 static FILE* asm_listing_file = NULL;
 
 static const char* ASM_LISTING_FILENAME = "text_files/listing.txt";
+
+//LABELS
+
+#define LABEL_NAME_SIZE 15
 
 //===================================================================
 
