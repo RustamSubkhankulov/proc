@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 
+
 //===================================================================
 
 #define REGISTER_MASK 0x40
@@ -14,9 +15,11 @@
 
 #define ASCII_OFFSET 96
 
-#define REGISTER_SIZE 4
+#define REGISTER_SIZE 8
 
-#define RAM_SIZE 50
+#define RAM_SIZE 1024 
+
+#define PRECISION 1e-3
 
 //===================================================================
 
@@ -32,11 +35,6 @@ struct Header {
 	char version;
 
 	long file_size;
-
-	int commands_number;
-	int elem_t_args_number;
-	int register_args_number;
-	int ram_using_commands_number;
 };
 
 #define HDRSIZE sizeof(struct Header)
@@ -100,7 +98,7 @@ static const char* ASM_LISTING_FILENAME = "text_files/listing.txt";
 
 static FILE* disasm_listing_file = NULL;
 
-static const char* DISASM_LISTING_FILENAME = "text_files/disasm_listin.txt";
+static const char* DISASM_LISTING_FILENAME = "text_files/disasm_listing.txt";
 
 //===================================================================
 
@@ -114,3 +112,6 @@ static const char* DISASM_LISTING_FILENAME = "text_files/disasm_listin.txt";
 static FILE* proc_output = stdout;
 
 static FILE* proc_input = stdin;
+
+//===================================================================
+

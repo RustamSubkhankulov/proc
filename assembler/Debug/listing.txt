@@ -1,0 +1,37 @@
+
+
+Current position: 018 Command name: START      Written bytes: 01 
+
+Current position: 019 Command name: IN         Written bytes: 09 
+
+Current position: 01a Command name: POP        Written bytes: 27 Written bytes: 01 
+
+Current position: 01c Command name: IN         Written bytes: 09 
+
+Current position: 01d Command name: POP        Written bytes: 27 Written bytes: 02 
+
+Current position: 01f Command name: IN         Written bytes: 09 
+
+Current position: 020 Command name: POP        Written bytes: 27 Written bytes: 03 
+
+Current position: 022 Command name: PUSH       Written bytes: 26 Written bytes: 02 
+
+Current position: 024 Command name: PUSH       Written bytes: 26 Written bytes: 02 
+
+Current position: 026 Command name: MUL        Written bytes: 04 
+
+Current position: 027 Command name: PUSH       Written bytes: 16 Argument value: 4 Written bytes: 04 00 00 00 
+
+Current position: 02c Command name: PUSH       Written bytes: 26 Written bytes: 01 
+
+Current position: 02e Command name: PUSH       Written bytes: 26 Written bytes: 03 
+
+Current position: 030 Command name: MUL        Written bytes: 04 
+
+Current position: 031 Command name: MUL        Written bytes: 04 
+
+Current position: 032 Command name: SUB        Written bytes: 03 
+
+Current position: 033 Command name: OUT        Written bytes: 08 
+
+Current position: 034 Command name: HLT        Written bytes: 00 

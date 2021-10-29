@@ -1,0 +1,8 @@
+﻿  assembler.cpp
+  text_processing.cpp
+  errors_and_logs.cpp
+  stack.cpp
+  main.cpp
+  processor.cpp
+  Создание кода...
+  cpu.vcxproj -> E:\visual studio\projects\cpu\Debug\cpu.exe

@@ -17,7 +17,7 @@ static char operation_name_buf[OPERATION_NAME_BUF_SIZE] = { 0 };
 
 //===================================================================
 
-int text_remove_comments_(struct Text* text, FUNC_FILE_LINE_PARAMS) {
+int text_remove_comments_(struct Text* text, LOG_PARAMS) {
 
 	asm_log_report();
 
@@ -54,8 +54,7 @@ int text_remove_comments_(struct Text* text, FUNC_FILE_LINE_PARAMS) {
 		asmstruct->ip++;													\
 		asmstruct_ip_check(asmstruct);										\
 																			\
-		char oper_code = op_code;											\
-		asmstruct->header.commands_number++;								\
+		oper_code = op_code;												\
 																			\
 		if (num != 0) {														\
 																			\
@@ -67,23 +66,18 @@ int text_remove_comments_(struct Text* text, FUNC_FILE_LINE_PARAMS) {
 																			\
 			check_second_square_bracket;									\
 		}	                                                                \
-			                                                                \
-		write_listing(oper_code, operation_name_buf, 						\
-					  code_ip_position);									\
+																			\
 		*(asmstruct->code + code_ip_position) = oper_code;					\
 	}																		\
 	else
 
 //===========================================================================
 
-#define DEF_JMP_(num, name, op_code, hash)									\
+#define DEF_JMP_(num, name, op_code, hash)		        					\
 																			\
 	if (oper_hash == hash) {												\
-		printf("\n\n Command" #name "\n\n");								\
-		write_listing(op_code, operation_name_buf, 							\
-					  asmstruct->ip - asmstruct->code); 					\
+																			\
 		*asmstruct->ip = op_code;											\
-		asmstruct->header.commands_number++;								\
 																			\
 		asmstruct->ip++;													\
 		asmstruct_check(asmstruct);											\
@@ -102,15 +96,18 @@ int text_remove_comments_(struct Text* text, FUNC_FILE_LINE_PARAMS) {
 
 //===========================================================================
 
-int process_string_(const char* string, AsmStruct* asmstruct, 
-				                        FUNC_FILE_LINE_PARAMS) {
+int process_string_(const char* string, AsmStruct* asmstruct, int str_number, 
+													   LOG_PARAMS) {
 
 	asm_log_report();
 
 	asmstruct_check(asmstruct);
 	char_ptr_check(string);
 	
+	save_string_start_ip(asmstruct, str_number);
+
 	extern char operation_name_buf[OPERATION_NAME_BUF_SIZE];
+
 	int byte_ct    = 0;
 	int byte_start = 0;
 	int byte_end   = 0;
@@ -120,23 +117,29 @@ int process_string_(const char* string, AsmStruct* asmstruct,
 	int sscanf_ret = 
 		sscanf(string, " %n%s%n %n", &byte_start, operation_name_buf, &byte_end, &byte_ct);
 
+	int length = byte_end - byte_start;
+
 	operation_name_buf[OPERATION_NAME_BUF_SIZE - 1] = '\0';
 
-	if (operation_name_buf[byte_end - byte_start - 1] == ':')
+	if (operation_name_buf[byte_end - byte_start - 1] == ':') {
+
 		operation_name_buf[byte_end - byte_start - 1] = '\0';
+		length -= 1;
+	}
 	
 	if (sscanf_ret == 0)
 		set_and_process_err(NO_COMMAND_IN_STRING);
 
-	int64_t oper_hash = get_hash(operation_name_buf, 
-							 OPERATION_NAME_BUF_SIZE);
+	int64_t oper_hash = get_hash(operation_name_buf, length);
 					
-	printf("\n\n hash is %ld  name is %s \n \n ", oper_hash, operation_name_buf);
+	printf("\n\n hash is %ld  name is %s %d \n \n ", oper_hash, operation_name_buf, length);
 
 							// char dest[10] = { 0 };
-							// strncpy(dest, "MUL", OPERATION_NAME_BUF_SIZE);
+							// strncpy(dest, "RET", OPERATION_NAME_BUF_SIZE);
 							// int64_t h_hash = get_hash(dest, OPERATION_NAME_BUF_SIZE);
-							//  printf("\n\n add hash %lu", h_hash);
+							//  printf("\n\n add hash %lu", h_hash)
+
+	unsigned char oper_code = 0;
 							
 	#include "../text_files/commands.txt"
 	#include "../text_files/jumps.txt"
@@ -149,6 +152,7 @@ int process_string_(const char* string, AsmStruct* asmstruct,
 	clear_opernamebuf();
 
 	check_if_string_is_empty(string + byte_ct);
+	write_listing(string, length, asmstruct, str_number);
 
 	return 0;
 }
@@ -156,7 +160,7 @@ int process_string_(const char* string, AsmStruct* asmstruct,
 //==================================================================
 
 
-int _jumps_fill_gaps(AsmStruct* asmstruct, FUNC_FILE_LINE_PARAMS) {
+int _jumps_fill_gaps(AsmStruct* asmstruct, LOG_PARAMS) {
 
 	asm_log_report();
 
@@ -164,22 +168,39 @@ int _jumps_fill_gaps(AsmStruct* asmstruct, FUNC_FILE_LINE_PARAMS) {
 
 	for (int i = 0; i < asmstruct->ud_jumps_number; i++) {
 
-		int code_pos = search_label_name(asmstruct->ud_jumps[i].label_name,
+		int jump_pos = asmstruct->ud_jumps[i].code_pos;
+
+		int dest_pos = search_label_name(asmstruct->ud_jumps[i].label_hash,
 										                        asmstruct);
-		printf("\n\n code pos from search %x\n\n", code_pos);
-		if (code_pos == -1)
+
+		if (dest_pos == -1)
 			return -1;
 
-		if (code_pos == -2)
+		if (dest_pos == -2)
 			set_and_process_err(NO_LABEL_FOR_JUMP);
 
-		printf("\n\n name of ud jump %s %d jump dest %d",
-		asmstruct->ud_jumps[i].label_name,
-		asmstruct->ud_jumps[i].code_pos,
-		code_pos);
+		*(int*)(asmstruct->code + jump_pos) = dest_pos;
 
-		*(elem_t*)(asmstruct->code + asmstruct->ud_jumps[i].code_pos) 
-														  = code_pos;
+		fix_up_listing(jump_pos, dest_pos);
+	}
+
+	for (int i = 0; i < asmstruct->str_jumps_number; i++) {
+
+		if (asmstruct->str_jumps[i].string_number < 1
+		||	asmstruct->str_jumps[i].string_number > asmstruct->strings_number)
+
+		set_and_process_err(INV_STRING_NUMBER);
+
+		int dest_pos = get_string_start_ip(asmstruct->str_jumps[i].string_number, 
+										 							 asmstruct);
+		if (dest_pos == -1)
+			return -1;
+
+		int jump_pos = asmstruct->str_jumps[i].code_ip;
+
+		*(int*)(asmstruct->code + jump_pos) = dest_pos;
+
+		fix_up_listing(jump_pos, dest_pos);
 	}
 	
 	return 0;
@@ -187,8 +208,31 @@ int _jumps_fill_gaps(AsmStruct* asmstruct, FUNC_FILE_LINE_PARAMS) {
 
 //==================================================================
 
-int _add_jump_without_known_label(const char* string, int ip, 
-								  AsmStruct* asmstruct, FUNC_FILE_LINE_PARAMS) {
+int _get_string_start_ip(int str_number, AsmStruct* asmstruct, 
+										LOG_PARAMS) {
+
+	asm_log_report();
+
+	asmstruct_check(asmstruct);
+
+	if (str_number == 1)
+		return sizeof(struct Header);
+	
+	if (str_number < 1 || str_number > asmstruct->strings_number)
+		set_and_process_err(INV_STRING_NUMBER);
+
+	int code_pos = asmstruct->string_start_ips[str_number - 1];
+
+	if (code_pos == 0)
+		code_pos = get_string_start_ip(str_number + 1, asmstruct);
+
+	return code_pos;
+}
+
+//==================================================================
+
+int _add_ud_label(const char* string, int ip, AsmStruct* asmstruct, 
+                                             LOG_PARAMS) {
 
 	asm_log_report();
 
@@ -215,10 +259,13 @@ int _add_jump_without_known_label(const char* string, int ip,
 
 	int number = asmstruct->ud_jumps_number;
 
-	asmstruct->ud_jumps[number].label_name_length = strlen(string);
-	asmstruct->ud_jumps[number].code_pos = asmstruct->ip - asmstruct->code;
-	
-	strncpy(asmstruct->ud_jumps[number].label_name, string, LABEL_NAME_SIZE);
+	int length = strlen(string);
+	int64_t ud_label_hash = get_hash((char*)string, length);
+
+	asmstruct->ud_jumps[number].label_hash = ud_label_hash;
+	asmstruct->ud_jumps[number].code_pos = ip;
+
+	printf("\n\nзаписан айдишник %d \n\n", ip);
 
 	asmstruct->ud_jumps_number++;
 
@@ -229,19 +276,8 @@ int _add_jump_without_known_label(const char* string, int ip,
 
 //==================================================================
 
-int label_struct_compare(const void* first, const void* second) {
-
-	const struct Label* first_struct  = (const struct Label*)first;
-	const struct Label* second_struct = (const struct Label*)second;
-
-	return strncmp(first_struct->label_name, 
-				   second_struct->label_name, LABEL_NAME_SIZE);
-}
-
-//==================================================================
-
-int _search_label_name(const char* string, AsmStruct* asmstruct, 
-										FUNC_FILE_LINE_PARAMS) {
+int _search_label_name(int64_t label_hash, AsmStruct* asmstruct, 
+										  LOG_PARAMS) {
 
 	asm_log_report();
     asmstruct_check(asmstruct);
@@ -253,17 +289,10 @@ int _search_label_name(const char* string, AsmStruct* asmstruct,
 
 	//print_labels(asmstruct);
 
-	printf("\n\n string |%s|", string);
-
 	int cntr = 0;
 	while (cntr < asmstruct->labels_number) {
 
-		printf("\n\n labels name comparing |%s|\n\n",asmstruct->labels[cntr].label_name);
-		printf("\n\n cntr %d \n\n", cntr);
-		printf("\n\n strlen %ld\n\n", strlen(asmstruct->labels[cntr].label_name));
-
-		if (!strncmp(string, asmstruct->labels[cntr].label_name, 
-											   LABEL_NAME_SIZE))
+		if (label_hash == asmstruct->labels[cntr].label_hash)
 		break;
 
 		cntr++;
@@ -272,16 +301,14 @@ int _search_label_name(const char* string, AsmStruct* asmstruct,
 	if (cntr == asmstruct->labels_number)
 		return -2;
 
-	else {
-		printf("\n\n labels number %d \n\n", asmstruct->labels_number);
-		printf("\n\n %d found label name |%s|\n\n", cntr, asmstruct->labels[cntr].label_name);
+	else 
 		return asmstruct->labels[cntr].code_pos;
-	}
+	
 }
 
 //==================================================================
 
-int clear_opernamebuf_(FUNC_FILE_LINE_PARAMS) {
+int clear_opernamebuf_(LOG_PARAMS) {
 
 	asm_log_report();
 
@@ -295,7 +322,7 @@ int clear_opernamebuf_(FUNC_FILE_LINE_PARAMS) {
 
 //===================================================================
 
-#define DEF_JMP_(num, name, code, hash)								\
+#define DEF_JMP_(num, name, code, hash)		         				\
 																	\
 	case hash: {													\
 																	\
@@ -304,7 +331,7 @@ int clear_opernamebuf_(FUNC_FILE_LINE_PARAMS) {
 
 //===================================================================
 
-int read_label_(const char* string, AsmStruct* asmstruct, FUNC_FILE_LINE_PARAMS) {
+int read_label_(const char* string, AsmStruct* asmstruct, LOG_PARAMS) {
 
 	asm_log_report();
 
@@ -312,39 +339,13 @@ int read_label_(const char* string, AsmStruct* asmstruct, FUNC_FILE_LINE_PARAMS)
 	char_ptr_check(string);
 
 	char label_name_buf[LABEL_NAME_SIZE] = { 0 };
-	int byte_start = 0;
+	
+	int label_name_length = 0;
 	int byte_end = 0;
 
-	char sscanf_ret = sscanf(string, " %n%s%n", &byte_start, label_name_buf, &byte_end);
-	int label_name_length = byte_end - byte_start;
+	scan_label;
 
-	if (sscanf_ret < 1)
-		set_and_process_err(INV_INSTRUCTION_STR);
-
-	char ch = 0;
-	int byte_offset = 0;
-	
-	sscanf_ret = sscanf(string + byte_end, " %c%n", &ch, &byte_offset);
-	if (sscanf_ret == 1)
-		byte_end += byte_offset;
-
-	if ((label_name_buf[label_name_length - 1] != ':' && sscanf_ret != 1)
-	 || (sscanf_ret == 1 && ch != ':'))
-
-		return 1;
-
-	if (label_name_length  > LABEL_NAME_SIZE)
-		set_and_process_err(LABEL_NAME_TOO_THICK);
-
-	if (label_name_buf[label_name_length - 1] == ':')
-		label_name_buf[label_name_length - 1] = '\0';
-
-	printf("\n\n Лэйбл нашелся\n\n");/////////////////////////////////////////////////
-	// printf("\n\n size %ld String: |%s| \n\n",strlen(string), string);
-	// printf("\n\n Лэйбл: %s %d %d %d\n\n", label_name_buf, label_name_length, byte_start, byte_end);
-	// printf("\n\n Last symbol %c", label_name_buf[label_name_length - 1]);
-
-	int64_t label_hash = get_hash(label_name_buf, OPERATION_NAME_BUF_SIZE);
+	int64_t label_hash = get_hash(label_name_buf, label_name_length);
 	switch (label_hash) {
 
 		#include "../text_files/jumps.txt"
@@ -352,17 +353,16 @@ int read_label_(const char* string, AsmStruct* asmstruct, FUNC_FILE_LINE_PARAMS)
 	}
 	#undef DEF_JMP_
 
-	int is_label_repeat = search_label_name(label_name_buf, asmstruct);
+	int do_label_repeat = search_label_name(label_hash, asmstruct);
 	
-	if (is_label_repeat == -1)
-		return -1;
+	if (do_label_repeat == -1) return -1;
 	
-	if (is_label_repeat != -2)
+	if (do_label_repeat != -2) 
 		set_and_process_err(REPEATING_LABELS)
 	
 	else {
 		
-		int ret = add_label(asmstruct, label_name_buf, label_name_length);
+		int ret = add_label(asmstruct, label_hash);
 		if (ret == -1)
 			set_and_process_err(CANNOT_ADD_NEW_LABEL);
 	}
@@ -374,11 +374,14 @@ int read_label_(const char* string, AsmStruct* asmstruct, FUNC_FILE_LINE_PARAMS)
 
 //===================================================================
 
-int _save_string_start_ip(AsmStruct* asmstruct, int ip, int number,  FUNC_FILE_LINE_PARAMS) {
+int _save_string_start_ip(AsmStruct* asmstruct, int number, 
+								     LOG_PARAMS) {
 
 	asm_log_report();
 
 	asmstruct_check(asmstruct);
+
+	int ip = asmstruct->ip - asmstruct->code;
 
 	if (ip > ASM_MAX_CODE_SIZE)
 		set_and_process_err(INV_INSTR_PTR);
@@ -394,7 +397,7 @@ int _save_string_start_ip(AsmStruct* asmstruct, int ip, int number,  FUNC_FILE_L
 //===================================================================
 
 int _add_string_jump(int code_ip, int dest_string, AsmStruct* asmstruct, 
-												 FUNC_FILE_LINE_PARAMS) {
+												 LOG_PARAMS) {
 
 	asm_log_report();
 
@@ -432,13 +435,11 @@ int _add_string_jump(int code_ip, int dest_string, AsmStruct* asmstruct,
 
 //===================================================================
 
-int _add_label(AsmStruct* asmstruct, const char* label_name, int length, 
-											      FUNC_FILE_LINE_PARAMS) {
+int _add_label(AsmStruct* asmstruct, int64_t label_hash, LOG_PARAMS) {
 
 	asm_log_report();
 
 	asmstruct_check(asmstruct);
-	char_ptr_check(label_name);
 	
 	if (asmstruct->labels_capacity == 0) {
 
@@ -463,11 +464,7 @@ int _add_label(AsmStruct* asmstruct, const char* label_name, int length,
 	int label_num = asmstruct->labels_number;
 
 	asmstruct->labels[label_num].code_pos= asmstruct->ip - asmstruct->code;
-	asmstruct->labels[label_num].label_name_length = length;
-
-	strncpy(asmstruct->labels[label_num].label_name, 
-					   				     label_name, 
-					                     length);
+	asmstruct->labels[label_num].label_hash = label_hash;
 	
 	asmstruct->labels_number++;
 
@@ -482,21 +479,21 @@ void print_labels(AsmStruct* asmstruct) {
 
 	for (int i = 0; i < asmstruct->labels_number; i++) {
 
-		printf("\n\n %s %x \n\n", asmstruct->labels[i].label_name,
-								  asmstruct->labels[i].code_pos);
+		printf("\n\n %ld %x \n\n", asmstruct->labels[i].label_hash,                                    ///без поииска. добавить в fill gaps
+								  asmstruct->labels[i].code_pos);                                     ///обработка str jumpov в дефайне
 	}
 }
 
 //===================================================================
 
 int convert_operations_to_binary_(struct Text* text, AsmStruct* asmstruct,
-													FUNC_FILE_LINE_PARAMS) {
+													LOG_PARAMS) {
 
 	asm_log_report();
 
 	open_listing_file();
 
-	asmstruct_check(asmstruct);
+	asmstruct_ptr_check(asmstruct);
 	text_ptr_check(text);
 
 	//hack_pentagon();
@@ -505,7 +502,7 @@ int convert_operations_to_binary_(struct Text* text, AsmStruct* asmstruct,
 		set_and_process_err(TEXT_NO_STRINGS)
 
 	else {
-		
+
 		int ret = asmstruct_allocate_memory(text->strings_number, asmstruct);
 		if (ret == -1)
 			return -1;	
@@ -530,12 +527,12 @@ int convert_operations_to_binary_(struct Text* text, AsmStruct* asmstruct,
 		value = process_string(text->strings[str_count].data, 
 											       asmstruct, 
 												  str_count);
-
 		if (value == -1) 
 			return -1;
 	}
 
 	print_labels(asmstruct);
+	printf("\n\n");
 
 	jumps_fill_gaps(asmstruct);
 
@@ -547,7 +544,7 @@ int convert_operations_to_binary_(struct Text* text, AsmStruct* asmstruct,
 
 //===================================================================
 
-int _asmsrtuct_free_memory(AsmStruct* asmstruct, FUNC_FILE_LINE_PARAMS) {
+int _asmstruct_free_memory(AsmStruct* asmstruct, LOG_PARAMS) {
 
 	asm_log_report();
 
@@ -567,19 +564,21 @@ int _asmsrtuct_free_memory(AsmStruct* asmstruct, FUNC_FILE_LINE_PARAMS) {
 
 	if (asmstruct->string_start_ips != NULL)
 		free(asmstruct->string_start_ips);
+
+	return 0;
 }
 
 //===================================================================
 
 int _asmstruct_allocate_memory(long number, AsmStruct* asmstruct, 
-										   FUNC_FILE_LINE_PARAMS) {
+										   LOG_PARAMS) {
 
 	asm_log_report();
 
-	asmstruct_check(asmstruct);
+	asmstruct_ptr_check(asmstruct);
 
 	void* ptr = calloc(ASM_MAX_CODE_SIZE, sizeof(char));
-	
+
 	if (ptr == NULL)
 		set_and_process_err(CANNOT_ALLOCATE_MEM)
 	else
@@ -598,7 +597,7 @@ int _asmstruct_allocate_memory(long number, AsmStruct* asmstruct,
 //===================================================================
 
 FILE* open_code_file_(const char* filename, const char* mode, 
-								       FUNC_FILE_LINE_PARAMS) {
+								       LOG_PARAMS) {
 
 	asm_log_report();
 
@@ -633,7 +632,7 @@ FILE* open_code_file_(const char* filename, const char* mode,
 
 //===================================================================
 
-int close_code_file_(FILE* fp, FUNC_FILE_LINE_PARAMS) {
+int close_code_file_(FILE* fp, LOG_PARAMS) {
 
 	asm_log_report();
 
@@ -649,7 +648,7 @@ int close_code_file_(FILE* fp, FUNC_FILE_LINE_PARAMS) {
 
 //===================================================================
 
-int header_make_(AsmStruct* asmstruct, FUNC_FILE_LINE_PARAMS) {
+int header_make_(AsmStruct* asmstruct, LOG_PARAMS) {
 
 	asm_log_report();
 
@@ -659,12 +658,6 @@ int header_make_(AsmStruct* asmstruct, FUNC_FILE_LINE_PARAMS) {
 	asmstruct->header.version = VERSION;
 
 	int file_size = asmstruct->ip - asmstruct->code;
-	if (file_size != sizeof(struct Header)
-		+ asmstruct->header.register_args_number * sizeof(char)
-		+ asmstruct->header.elem_t_args_number * sizeof(elem_t)
-		+ asmstruct->header.commands_number * sizeof(char))
-
-		set_and_process_err(CODE_FILE_SIZE_ERR);
 
 	asmstruct->header.file_size = file_size;
 
@@ -676,7 +669,7 @@ int header_make_(AsmStruct* asmstruct, FUNC_FILE_LINE_PARAMS) {
 //====================================================
 
 int _write_code(AsmStruct* asmstruct, FILE* code_file, 
-								FUNC_FILE_LINE_PARAMS) {
+								LOG_PARAMS) {
 
 	asm_log_report();
 
@@ -696,7 +689,7 @@ int _write_code(AsmStruct* asmstruct, FILE* code_file,
 
 //====================================================
 
-int open_listing_file_(FUNC_FILE_LINE_PARAMS) {
+int open_listing_file_(LOG_PARAMS) {
 
 	asm_log_report();
 
@@ -714,7 +707,7 @@ int open_listing_file_(FUNC_FILE_LINE_PARAMS) {
 
 //====================================================
 
-int close_listing_file_(FUNC_FILE_LINE_PARAMS) {
+int close_listing_file_(LOG_PARAMS) {
 
 	asm_log_report();
 
@@ -726,66 +719,14 @@ int close_listing_file_(FUNC_FILE_LINE_PARAMS) {
 		set_and_process_err(FCLOSE_ERROR);
 
 	return 0;
-}
-
-//====================================================
-
-int write_value_to_listing(void* base, int size) {
-
-	extern FILE* asm_listing_file;
-
-	char* base_char = (char*)base;
-
-	if (size == sizeof(elem_t)) {
-
-		fprintf(asm_listing_file, "\nArgument value: " ELEM_SPEC " ",
-											    *(elem_t*)base_char);
-	}
-
-	if (size == sizeof(char)) {
-
-		fprintf(asm_listing_file, "\n Argument value: %cx  ",
-		                          *base_char + ASCII_OFFSET);
-	}
-
-	fprintf(asm_listing_file, "Written bytes: ");
-
-	unsigned char* ptr = (unsigned char*)base_char;
-
-	for (int ct = 0; ct < size ; ct++) {
-
-		fprintf(asm_listing_file, "%02x ", *(ptr + ct));
-	}
-
-	return 0;
 }	
-
-//====================================================
-
-int write_listing(int oper_code, const char* oper_name, int prev_pos) {
-
-	extern FILE* asm_listing_file;
-
-	file_ptr_check(asm_listing_file);
-	char_ptr_check(oper_name);
-
-	fprintf(asm_listing_file, "\n" "Current position: %03x ", prev_pos);
-
-	fprintf(asm_listing_file, "Command name: %-*s ",OPERATION_NAME_BUF_SIZE, 
-													oper_name);
-	
-	fprintf(asm_listing_file, "Written bytes: %02x \n", 
-							 (unsigned char)oper_code);
-
-	return 0;
-}
 
 //===================================================================
 
 #define DEF_CMD_(num, name, code, hash) \
 	case CMD_##name: ;
 
-void check_unique_(FUNC_FILE_LINE_PARAMS) {
+void check_unique_(LOG_PARAMS) {
 
 	asm_log_report();
 
@@ -799,7 +740,7 @@ void check_unique_(FUNC_FILE_LINE_PARAMS) {
 
 //===================================================================
 
-int64_t get_hash_(char* base, unsigned int len, FUNC_FILE_LINE_PARAMS) {
+int64_t get_hash_(char* base, unsigned int len, LOG_PARAMS) {
 
     log_report();
 
@@ -848,4 +789,44 @@ int64_t get_hash_(char* base, unsigned int len, FUNC_FILE_LINE_PARAMS) {
     h ^= h >> 15;
 
     return h;
+}
+
+//===================================================================
+
+int write_listing(const char* string, int length, 
+				  AsmStruct* asmstruct, int str_number) {
+
+	extern FILE* asm_listing_file;
+	
+	const unsigned char* printer = asmstruct->code + 
+								   asmstruct->string_start_ips[str_number];
+
+	int number = asmstruct->ip - printer;
+
+	fprintf(asm_listing_file, "Current position: %x. ", 
+							   asmstruct->string_start_ips[str_number]);
+
+	fprintf(asm_listing_file,"Input string : %*s. Written bytes: ", 
+												   length, string);
+
+	for (int ct = 0; ct < number; ct++) {
+
+		fprintf(asm_listing_file, "%02x ", *(printer + ct));
+	}
+
+	fprintf(asm_listing_file, "\n\n");
+
+	return 0;
+}
+
+//=====================================================================
+
+int fix_up_listing(int jump_pos, int jump_dest) {
+
+	extern FILE* listing_file;
+
+	fprintf(asm_listing_file, "Filled jump destination. Ip: %x. "
+							  "Destination Ip: %x \n\n",
+							   jump_pos, jump_dest);
+	return 0;
 }

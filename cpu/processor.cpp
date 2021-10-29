@@ -2,12 +2,14 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "processor.h"
+#include "../stack/stackconfig.h"
 
 //===================================================================
 
-int _open_proc_input(const char* filename, FUNC_FILE_LINE_PARAMS) {
+int _open_proc_input(const char* filename, LOG_PARAMS) {
 
     proc_log_report();
 
@@ -28,7 +30,7 @@ int _open_proc_input(const char* filename, FUNC_FILE_LINE_PARAMS) {
 
 //==================================================================
 
-int _close_proc_input(FUNC_FILE_LINE_PARAMS) {
+int _close_proc_input(LOG_PARAMS) {
 
     proc_log_report();
 
@@ -47,7 +49,7 @@ int _close_proc_input(FUNC_FILE_LINE_PARAMS) {
 
 //===================================================================
 
-int _open_proc_output(const char* filename, FUNC_FILE_LINE_PARAMS) {
+int _open_proc_output(const char* filename, LOG_PARAMS) {
 
     proc_log_report();
 
@@ -68,7 +70,7 @@ int _open_proc_output(const char* filename, FUNC_FILE_LINE_PARAMS) {
 
 //===================================================================
 
-int _close_proc_output(FUNC_FILE_LINE_PARAMS) {
+int _close_proc_output(LOG_PARAMS) {
 
     proc_log_report();
 
@@ -87,7 +89,7 @@ int _close_proc_output(FUNC_FILE_LINE_PARAMS) {
 
 //===================================================================
 
-int _header_check(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
+int _header_check(procstruct* procstruct, LOG_PARAMS) {
 
     proc_log_report();
 
@@ -104,18 +106,12 @@ int _header_check(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
     if (procstruct->header.file_size != procstruct->code_file_size)
         set_and_process_err(HDR_INV_FILE_SIZE);
 
-    if (procstruct->header.elem_t_args_number
-      + procstruct->header.register_args_number
-      > procstruct->header.commands_number)
-
-        set_and_process_err(HDR_INV_CMD_NUMBERS);
-
     return 0;
 }
 
 //===================================================================
 
-int _init_procstruct(procstruct* procstruct, FILE* fp, FUNC_FILE_LINE_PARAMS) {
+int _init_procstruct(procstruct* procstruct, FILE* fp, LOG_PARAMS) {
 
     proc_log_report();
 
@@ -143,7 +139,7 @@ int _init_procstruct(procstruct* procstruct, FILE* fp, FUNC_FILE_LINE_PARAMS) {
 //===================================================================
 
 
-int _dtor_procstruct(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
+int _dtor_procstruct(procstruct* procstruct, LOG_PARAMS) {
 
     proc_log_report();
 
@@ -159,7 +155,7 @@ int _dtor_procstruct(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
 }
 //===================================================================
 
-const unsigned char* _read_from_file(FILE* fp, long* size, FUNC_FILE_LINE_PARAMS) {
+const unsigned char* _read_from_file(FILE* fp, long* size, LOG_PARAMS) {
 
     proc_log_report();
 
@@ -188,15 +184,14 @@ const unsigned char* _read_from_file(FILE* fp, long* size, FUNC_FILE_LINE_PARAMS
 
 //===================================================================
 
-int _proc_perform(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
+int _proc_perform(procstruct* procstruct, LOG_PARAMS) {
 
     proc_log_report();
 
     procstruct_ptr_check(procstruct);
 
-    for (int cmnd_counter = 0;
-             cmnd_counter < procstruct->header.commands_number;
-             cmnd_counter ++) {
+    while (procstruct->ip - procstruct->code_array 
+                         <= procstruct->code_file_size) {
 
         int ret_val = proc_execute_command(procstruct);
 
@@ -231,12 +226,24 @@ int _proc_perform(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
             return 1;                                               \
                                                                     \
         break;                                                      \
-        }
-
+    }
 
 //===================================================================
 
-int _proc_execute_command(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
+#define DEF_JMP_(num, name, code, hash)                             \
+                                                                    \
+    case code: {                                                    \
+                                                                    \
+        int ret_val = PROC_##name(procstruct);                      \
+        if (ret_val == -1)                                          \
+            return -1;                                              \
+                                                                    \
+        break;                                                      \
+    }                                                                
+
+//===================================================================
+
+int _proc_execute_command(procstruct* procstruct, LOG_PARAMS) {
 
     proc_log_report();
 
@@ -250,8 +257,10 @@ int _proc_execute_command(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
     switch (oper_code & OPER_CODE_MASK) {
 
         #include "../text_files/commands.txt"
+        #include "../text_files/jumps.txt"
 
         #undef DEF_CMD_
+        #undef DEF_JMP_
 
         default: 
             set_and_process_err(PROC_INV_OPER_CODE);
@@ -262,7 +271,264 @@ int _proc_execute_command(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
 
 //===================================================================
 
-int _PROC_INIT(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
+int _PROC_RET(procstruct* procstruct, LOG_PARAMS) {
+
+    proc_log_report();
+
+    int err = 0;
+
+    int ret_ip = stack_pop(&procstruct->Stack, &err);
+    if (err == -1)
+        return -1;
+
+    procstruct->ip = procstruct->code_array + ret_ip;
+    procstruct_ip_check(procstruct);
+
+    procstruct->command_ct;
+
+    return 0;
+}
+
+//===================================================================
+
+int _PROC_CALL(procstruct* procstruct, LOG_PARAMS) {
+
+    proc_log_report();
+
+    int dest_ip = 0;
+
+    get_destination_ip;
+
+    procstruct->ip += sizeof(int);
+    procstruct_ip_check(procstruct);
+
+    int return_ip = procstruct->ip - procstruct->code_array;
+
+    int err = stack_push(&procstruct->Stack, return_ip);
+    if (err == -1)
+        return -1;
+
+    procstruct->ip = procstruct->code_array + dest_ip;
+    procstruct_ip_check(procstruct);
+
+    procstruct->command_ct++;
+
+    return 0;
+}
+
+//===================================================================
+
+int _PROC_JMP(procstruct* procstruct, LOG_PARAMS) {   
+                                                                    
+    proc_log_report(); 
+
+    int dest_ip = 0;                                             
+                                                                    
+    get_destination_ip;                        
+                                                                           
+    procstruct->ip = procstruct->code_array + dest_ip;         
+    procstruct_ip_check(procstruct);                            
+                                                     
+    procstruct->command_ct++;                                      
+                                                                    
+    return 0;                                                       
+}
+
+//===================================================================
+
+int _PROC_JA(procstruct* procstruct, LOG_PARAMS) {   
+                                                                    
+    proc_log_report();                                              
+                                                                    
+    int dest_ip = 0;
+
+    get_destination_ip;                              
+                                                                    
+    int err = 0;                                                    
+    elem_t first_val = 0;
+    elem_t second_val = 0;    
+
+    get_two_args_from_stack;                                                                     
+                                                                    
+    if (first_val > second_val) {           
+                                                                    
+        procstruct->ip = procstruct->code_array + dest_ip;          
+        procstruct_ip_check(procstruct);                            
+    }                                                               
+    else {                                                          
+                                                                    
+        procstruct->ip += sizeof(int);                           
+        procstruct_ip_check(procstruct);                            
+        }                                                           
+                                                                    
+    procstruct->command_ct++;                                       
+                                                                    
+    return 0;                                                       
+}
+
+//===================================================================
+
+int _PROC_JAE(procstruct* procstruct, LOG_PARAMS) {   
+                                                                    
+    proc_log_report();                                              
+                                                                    
+    int dest_ip = 0;
+
+    get_destination_ip;                              
+                                                                    
+    int err = 0;                                                    
+    elem_t first_val = 0;
+    elem_t second_val = 0;    
+
+    get_two_args_from_stack;                         
+                                                                    
+    if (first_val >= second_val) {           
+                                                                    
+        procstruct->ip = procstruct->code_array + dest_ip;          
+        procstruct_ip_check(procstruct);                            
+    }                                                               
+    else {                                                          
+                                                                    
+        procstruct->ip += sizeof(int);                           
+        procstruct_ip_check(procstruct);                            
+        }                                                           
+                                                                    
+    procstruct->command_ct++;                                       
+                                                                    
+    return 0;                                                       
+}
+
+//===================================================================
+
+int _PROC_JB(procstruct* procstruct, LOG_PARAMS) {   
+                                                                    
+    proc_log_report();                                              
+                                                                    
+    int dest_ip = 0;
+
+    get_destination_ip;                              
+                                                                    
+    int err = 0;                                                    
+    elem_t first_val = 0;
+    elem_t second_val = 0;    
+
+    get_two_args_from_stack;                         
+                                                                    
+    if (first_val < second_val) {           
+                                                                    
+        procstruct->ip = procstruct->code_array + dest_ip;          
+        procstruct_ip_check(procstruct);                            
+    }                                                               
+    else {                                                          
+                                                                    
+        procstruct->ip += sizeof(int);                           
+        procstruct_ip_check(procstruct);                            
+        }                                                           
+                                                                    
+    procstruct->command_ct++;                                       
+                                                                    
+    return 0;                                                       
+}
+
+//===================================================================
+
+int _PROC_JBE(procstruct* procstruct, LOG_PARAMS) {   
+                                                                    
+    proc_log_report();                                              
+                                                                    
+    int dest_ip = 0;
+
+    get_destination_ip;                              
+                                                                    
+    int err = 0;                                                    
+    elem_t first_val = 0;
+    elem_t second_val = 0;    
+
+    get_two_args_from_stack;                         
+                                                                    
+    if (first_val <= second_val) {           
+                                                                    
+        procstruct->ip = procstruct->code_array + dest_ip;          
+        procstruct_ip_check(procstruct);                            
+    }                                                               
+    else {                                                          
+                                                                    
+        procstruct->ip += sizeof(int);                           
+        procstruct_ip_check(procstruct);                            
+        }                                                           
+                                                                    
+    procstruct->command_ct++;                                       
+                                                                    
+    return 0;                                                       
+}
+
+//===================================================================
+
+int _PROC_JE(procstruct* procstruct, LOG_PARAMS) {   
+                                                                    
+    proc_log_report();                                              
+                                                                    
+    int dest_ip = 0;
+
+    get_destination_ip;                              
+                                                                    
+    int err = 0;                                                    
+    elem_t first_val = 0;
+    elem_t second_val = 0;    
+
+    get_two_args_from_stack;                       
+     //                                                               
+    if (fabs(first_val - second_val) < PRECISION) {         
+                                                                    
+        procstruct->ip = procstruct->code_array + dest_ip;          
+        procstruct_ip_check(procstruct);                            
+    }                                                               
+    else {                                                          
+                                                                    
+        procstruct->ip += sizeof(int);                           
+        procstruct_ip_check(procstruct);                            
+        }                                                           
+                                                                    
+    procstruct->command_ct++;                                       
+                                                                    
+    return 0;                                                       
+}
+
+///==================================================================
+
+int _PROC_JNE(procstruct* procstruct, LOG_PARAMS) {   
+                                                                    
+    proc_log_report();                                              
+                                                                    
+    int dest_ip = 0;
+
+    get_destination_ip;                              
+                                                                    
+    int err = 0;                                                    
+    elem_t first_val = 0;
+    elem_t second_val = 0;    
+
+    get_two_args_from_stack;                        
+                                                                    
+    if (fabs(first_val - second_val) > 0) {           
+                                                                    
+        procstruct->ip = procstruct->code_array + dest_ip;          
+        procstruct_ip_check(procstruct);                            
+    }                                                               
+    else {                                                          
+                                                                    
+        procstruct->ip += sizeof(int);                           
+        procstruct_ip_check(procstruct);                            
+        }                                                           
+                                                                    
+    procstruct->command_ct++;                                       
+                                                                    
+    return 0;                                                       
+}
+
+//===================================================================
+
+int _PROC_INIT(procstruct* procstruct, LOG_PARAMS) {
 
     proc_log_report();
 
@@ -282,7 +548,7 @@ int _PROC_INIT(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
 }
 //===================================================================
 
-int _PROC_HLT(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
+int _PROC_HLT(procstruct* procstruct, LOG_PARAMS) {
 
     proc_log_report();
 
@@ -303,7 +569,7 @@ int _PROC_HLT(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
 
 //===================================================================
 
-int _PROC_ADD(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
+int _PROC_ADD(procstruct* procstruct, LOG_PARAMS) {
 
     proc_log_report();
 
@@ -330,7 +596,7 @@ int _PROC_ADD(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
 
 //===================================================================
 
-int _PROC_SUB(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
+int _PROC_SUB(procstruct* procstruct, LOG_PARAMS) {
 
     proc_log_report();
 
@@ -339,14 +605,17 @@ int _PROC_SUB(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
     int err = 0;
 
     elem_t first_value  = stack_pop(&procstruct->Stack, &err);
-    if (err == -1) return -1;
+    if (err == -1) 
+        return -1;
 
     elem_t second_value = stack_pop(&procstruct->Stack, &err); 
-    if (err == -1) return -1;
+    if (err == -1) 
+        return -1;
 
     err = stack_push(&procstruct->Stack, second_value - first_value);
 
-    if (err == -1) return -1;
+    if (err == -1) 
+        return -1;
 
     else {
         procstruct->command_ct++;
@@ -357,7 +626,7 @@ int _PROC_SUB(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
 }
 //===================================================================
 
-int _PROC_DIV(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
+int _PROC_DIV(procstruct* procstruct, LOG_PARAMS) {
 
     proc_log_report();
 
@@ -368,40 +637,16 @@ int _PROC_DIV(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
     elem_t divider  = stack_pop(&procstruct->Stack, &err);
     elem_t dividend = stack_pop(&procstruct->Stack, &err);
 
-    if (err == -1) return -1;
+    if (err == -1) 
+        return -1;
     
-    if (divider == 0)
+    if (fabs(divider) < PRECISION)
         set_and_process_err(PROC_DIV_BY_ZERO);
 
     err = stack_push(&procstruct->Stack, (elem_t)(dividend / divider));
  
-    if (err == -1) return -1;
-
-    else{
-        procstruct->command_ct++;
-        procstruct->ip++;
-
-        return 0;
-    }
-}
-//===================================================================
-
-int _PROC_MUL(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
-
-    proc_log_report();
-
-    procstruct_ptr_check(procstruct);
-
-    int err = 0;
-
-    elem_t value = stack_pop(&procstruct->Stack, &err)
-                 * stack_pop(&procstruct->Stack, &err);
-
-    if (err == -1) return -1;
-
-    err = stack_push(&procstruct->Stack, value);
-
-    if (err == -1) return -1;
+    if (err == -1) 
+        return -1;
 
     else {
         procstruct->command_ct++;
@@ -412,7 +657,35 @@ int _PROC_MUL(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
 }
 //===================================================================
 
-int _PROC_OUT(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
+int _PROC_MUL(procstruct* procstruct, LOG_PARAMS) {
+
+    proc_log_report();
+
+    procstruct_ptr_check(procstruct);
+
+    int err = 0;
+
+    elem_t value = stack_pop(&procstruct->Stack, &err)
+                 * stack_pop(&procstruct->Stack, &err);
+
+    if (err == -1) 
+        return -1;
+
+    err = stack_push(&procstruct->Stack, value);
+
+    if (err == -1) 
+        return -1;
+
+    else {
+        procstruct->command_ct++;
+        procstruct->ip++;
+
+        return 0;
+    }
+}
+//===================================================================
+
+int _PROC_OUT(procstruct* procstruct, LOG_PARAMS) {
 
     proc_log_report();
 
@@ -423,9 +696,10 @@ int _PROC_OUT(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
 
     elem_t out_value = stack_pop(&procstruct->Stack, &err);
 
-    if (err == -1) return -1;
+    if (err == -1) 
+        return -1;
 
-    int fprintf_ret = fprintf(proc_output, ELEM_SPEC "\n", out_value);
+    int fprintf_ret = fprintf(proc_output, ELEM_SPEC_2 "\n", out_value);
 
     if (fprintf_ret < 0)
         set_and_process_err(FILE_OUTPUT_ERROR)
@@ -439,7 +713,7 @@ int _PROC_OUT(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
 }
 //===================================================================
 
-int _PROC_IN(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
+int _PROC_IN(procstruct* procstruct, LOG_PARAMS) {
 
     proc_log_report();
 
@@ -456,7 +730,8 @@ int _PROC_IN(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
 
     int err = stack_push(&procstruct->Stack, in_value);
 
-    if (err == -1) return -1;
+    if (err == -1) 
+        return -1;
 
     else {
         procstruct->command_ct++;
@@ -467,7 +742,7 @@ int _PROC_IN(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
 }
 //===================================================================
 
-int _PROC_PUSH(procstruct* procstruct, unsigned char oper_code, FUNC_FILE_LINE_PARAMS) {
+int _PROC_PUSH(procstruct* procstruct, unsigned char oper_code, LOG_PARAMS) {
 
     proc_log_report();
 
@@ -482,7 +757,9 @@ int _PROC_PUSH(procstruct* procstruct, unsigned char oper_code, FUNC_FILE_LINE_P
     case REGISTER_MASK: {
 
         char reg_number = *procstruct->ip - 1;
+        
         procstruct->ip++;
+        procstruct_ip_check(procstruct);
 
         if (reg_number < 0 || reg_number > REGISTER_SIZE - 1)
             set_and_process_err(INV_REGISTER_NUMBER);
@@ -491,40 +768,53 @@ int _PROC_PUSH(procstruct* procstruct, unsigned char oper_code, FUNC_FILE_LINE_P
             
             if (procstruct->regist[reg_number] > RAM_SIZE)
                 set_and_process_err(RAM_INV_ADDRESS);
+//
 
+//
             err = stack_push(&procstruct->Stack,
-                              procstruct->ram
-                             [procstruct->regist[reg_number]]);
-
-            procstruct->ram_using_commands_number++;
+                             procstruct->ram
+                             [(int)procstruct->regist[reg_number]]);
         }
         else 
             err = stack_push(&procstruct->Stack,
                               procstruct->regist[reg_number]);
-
-        procstruct->register_args_ct++;
         break;
     }
 
     case IMM_MASK: {
 
         elem_t value = *(elem_t*)procstruct->ip;
+        
         procstruct->ip += sizeof(elem_t);
+        procstruct_ip_check(procstruct);
 
         if ((oper_code & ~IMM_MASK) == RAM_MASK) {
 
             if (value > RAM_SIZE)
                 set_and_process_err(RAM_INV_ADDRESS);
-
+////
             err = stack_push(&procstruct->Stack,
-                                procstruct->ram[value]);
-
-            procstruct->ram_using_commands_number++;
+                                procstruct->ram[(int)value]);
         }
         else
             err = stack_push(&procstruct->Stack, value);
 
-        procstruct->elem_t_args_ct++;
+        break;
+    }
+
+    case IMM_MASK | REGISTER_MASK: {
+        
+        if (oper_code & ~(IMM_MASK | REGISTER_MASK) != RAM_MASK)
+            set_and_process_err(PROC_INVALID_CMND);
+
+        int ram_number = 0;
+        get_ram_number;
+
+        int err = stack_push(&procstruct->Stack, 
+                             procstruct->ram[ram_number]);
+        if (err == -1)
+            set_and_process_err(STACK_PROC_ERROR);
+
         break;
     }
 
@@ -532,7 +822,8 @@ int _PROC_PUSH(procstruct* procstruct, unsigned char oper_code, FUNC_FILE_LINE_P
         set_and_process_err(PROC_INV_OPER_CODE);
     }
 
-    if (err == -1) return -1;
+    if (err == -1) 
+        return -1;
 
     procstruct->command_ct++;
     return 0;
@@ -540,7 +831,7 @@ int _PROC_PUSH(procstruct* procstruct, unsigned char oper_code, FUNC_FILE_LINE_P
 
 //===================================================================
 
-int _PROC_POP(procstruct* procstruct, unsigned char oper_code, FUNC_FILE_LINE_PARAMS) {
+int _PROC_POP(procstruct* procstruct, unsigned char oper_code, LOG_PARAMS) {
 
     proc_log_report();
 
@@ -564,17 +855,14 @@ int _PROC_POP(procstruct* procstruct, unsigned char oper_code, FUNC_FILE_LINE_PA
 
             if (procstruct->regist[reg_number] > RAM_SIZE)
                 set_and_process_err(RAM_INV_ADDRESS);
-
-            procstruct->ram[procstruct->regist[reg_number]] = 
+//
+            procstruct->ram[(int)procstruct->regist[reg_number]] = 
                 stack_pop(&procstruct->Stack, &err);
-
-            procstruct->ram_using_commands_number++;
         }
         else 
             procstruct->regist[reg_number] =
                 stack_pop(&procstruct->Stack, &err);
 
-        procstruct->register_args_ct++;
         break;
     }
 
@@ -587,16 +875,32 @@ int _PROC_POP(procstruct* procstruct, unsigned char oper_code, FUNC_FILE_LINE_PA
 
             if (value > RAM_SIZE)
                 set_and_process_err(RAM_INV_ADDRESS);
-
-            procstruct->ram[value] = 
+//
+            procstruct->ram[(int)value] = 
                 stack_pop(&procstruct->Stack, &err);
-
-            procstruct->ram_using_commands_number++;
         }
         else
             set_and_process_err(PROC_INV_OPER_CODE);
 
-        procstruct->elem_t_args_ct++;
+        break;
+    }
+
+    case IMM_MASK | REGISTER_MASK: {
+
+        if (oper_code & ~(IMM_MASK | REGISTER_MASK) != RAM_MASK)
+            set_and_process_err(PROC_INVALID_CMND);
+
+        int ram_number = 0;
+        get_ram_number;
+
+        int err = 0;
+        elem_t value = stack_pop(&procstruct->Stack, &err);
+
+        if (err == -1)
+            return -1;
+
+        procstruct->ram[ram_number] = value;
+
         break;
     }
 
@@ -612,129 +916,112 @@ int _PROC_POP(procstruct* procstruct, unsigned char oper_code, FUNC_FILE_LINE_PA
 
 //===================================================================
 
-int _proc_final_check(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
+int _proc_final_check(procstruct* procstruct, LOG_PARAMS) {
 
     proc_log_report();
 
     procstruct_ptr_check(procstruct);
 
     if (procstruct->ip - procstruct->code_array
-        > procstruct->code_file_size)
+        > procstruct->code_file_size
+     || procstruct->ip - procstruct->code_array
+        < 0)
 
         set_and_process_err(INV_INSTR_PTR);
-
-    if (procstruct->command_ct !=
-        procstruct->header.commands_number)
-
-        set_and_process_err(INV_COMMANDS_NUMBER);
-
-    if (procstruct->elem_t_args_ct !=
-        procstruct->header.elem_t_args_number)
-
-        set_and_process_err(INV_ARGUMENTS_NUMBER);
-
-    if (procstruct->register_args_ct !=
-        procstruct->header.register_args_number)
-
-        set_and_process_err(INV_REGISTER_ARGS_NUMBER);
-
-    printf(" \n \n proc %d header %d \n",procstruct->ram_using_commands_number, procstruct->header.ram_using_commands_number);
-
-    if (procstruct->ram_using_commands_number !=
-        procstruct->header.ram_using_commands_number)
-
-        set_and_process_err(RAM_COMMANDS_INV_NUMBER);
 
     return 0;
 }
 
 //===================================================================
 
-int _PROC_DUMP(procstruct* procstruct, FUNC_FILE_LINE_PARAMS) {
+int _PROC_DUMP(procstruct* procstruct, LOG_PARAMS) {
 
     proc_log_report();
 
     procstruct_ptr_check(procstruct);
 
-    extern FILE* error_file;
+    extern FILE* log_output;
 
-    fprintf(error_file, "\n" "Critical error during processing." "\n");
+    fprintf(log_output, "\n" "Commands executed %d" "\n", procstruct->command_ct);
 
-    fprintf(error_file, "\n" "Size of code array: %lu", procstruct->code_file_size);
+    fprintf(log_output, "\n" "Size of code array: %lu", procstruct->code_file_size);
 
-    fprintf(error_file, "\n" "Code array address <%p>" "\n", procstruct->code_array);
+    fprintf(log_output, "\n" "Code array address <%p>" "\n", procstruct->code_array);
 
-    fprintf(error_file, "\n" "Commands executed: %d of %d",
-                                                procstruct->command_ct,
-                                                procstruct->header.commands_number);
-    fprintf(error_file, "\n" "Arguments used during executing: %d of %d",
-                                                procstruct->elem_t_args_ct,
-                                                procstruct->header.elem_t_args_number);
-    fprintf(error_file, "\n" "Register arguments used during executing: %d of %d",
-                                            procstruct->elem_t_args_ct,
-                                            procstruct->header.elem_t_args_number);
-
-    if (procstruct->command_ct > procstruct->header.commands_number) 
-
-        fprintf(error_file, "\n" "ERROR: incorrect number of executed commands");
-    
-
-    if (procstruct->elem_t_args_ct > procstruct->header.elem_t_args_number) 
-
-        fprintf(error_file, "\n" "ERROR: incorrect number of arguments used");
 
     if (procstruct->code_file_size != procstruct->header.file_size)
 
-        fprintf(error_file, "\n" "ERROR: incorrect code file size:");
+        fprintf(log_output, "\n" "ERROR: incorrect code file size:");
 
-        fprintf(error_file, "\n" "File size written in header during compiling: %ld",
+        fprintf(log_output, "\n" "File size written in header during compiling: %ld",
                                                         procstruct->header.file_size);
 
-        fprintf(error_file, "\n" "Size of file copied during processing: %ld",
+        fprintf(log_output, "\n" "Size of file copied during processing: %ld",
                                                    procstruct->code_file_size);
 
     if (procstruct->code_array == NULL) {
 
-        fprintf(error_file, "\n" "ERROR: invalid pointer to the code array");
+        fprintf(log_output, "\n" "ERROR: invalid pointer to the code array");
         return -1;
     }
 
+    fprintf(log_output, "\n" "Instruction pointer: %ld" "\n", 
+                        procstruct->ip - procstruct->code_array);
+
     if (procstruct->ip - procstruct->code_array > procstruct->code_file_size) {
 
-        fprintf(error_file, "\n" "ERROR: instruction pointer points out of code array");
+        fprintf(log_output, "\n" "ERROR: instruction pointer points out of code array");
     }
 
-    fprintf(error_file, "\n" "Code array: " "\n\n");
+    fprintf(log_output, "\n" "Code array: " "\n\n");
 
     int ip_value = procstruct->ip - procstruct->code_array;
     int val = 0;
 
     for (int ct = 0; ct < procstruct->code_file_size;) {
 
-        fprintf(error_file, "%02x ", procstruct->code_array[ct++]);
+        fprintf(log_output, "%02x ", procstruct->code_array[ct++]);
 
         if ((ct / 16) * 16 + 16 > (ip_value / 16) * 16 + 16 && val == 0) {
 
-            fprintf(error_file, "\n" "%*c\n", (ip_value % 16) * 3 + 1, '^');
+            fprintf(log_output, "\n" "%*c\n", (ip_value % 16) * 3 + 1, '^');
             val++;
         }
 
         else if ((ct % 16) == 0)
-            fprintf(error_file, "\n\n");
+            fprintf(log_output, "\n\n");
     }
 
-    fprintf(error_file, "\n\n");
+    fprintf(log_output, "\n\n");
 
     if (stack_validator(&procstruct->Stack) == -1) {
 
-        fprintf(error_file, "\n" "Error in stack work" "\n");
+        fprintf(log_output, "\n" "Error in stack work" "\n");
         stack_dump(&procstruct->Stack);
     }
     else {
 
-        fprintf(error_file, "\n" "No errors in stack working" "\n");
+        fprintf(log_output, "\n" "No errors in stack working" "\n");
         stack_out(&procstruct->Stack);
     }
+
+    fprintf(log_output, "\n\n" "Registers: " "\n\n");
+
+    for (int ct = 0; ct < REGISTER_SIZE; ct++) {
+
+        fprintf(log_output, "[%c] %g ", ct + ASCII_OFFSET + 1,
+                                      procstruct->regist[ct]);
+    
+        if ( (ct + 1) % 8 == 0)
+        fprintf(log_output, "\n\n");
+    }
+
+    fprintf(log_output, "\n\n");
+
+    procstruct->command_ct++;
+
+    procstruct->ip++;
+    procstruct_ip_check(procstruct);
 
     return 0;
 }
