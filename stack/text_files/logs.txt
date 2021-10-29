@@ -1,0 +1,23 @@
+Stack error code is 117
+An error occured during work with stack.
+ File: E:\visual studio\projects\stack\stack.cpp, function: stack_validator_, line 99.
+Invalid stack pointer
+
+
+Stack error code is 117
+An error occured during work with stack.
+ File: E:\visual studio\projects\stack\stack.cpp, function: stack_validator_, line 107.
+Invalid stack pointer
+
+
+dio\projects\stack\stack.cpp. Current line: 511.
+
+Funtion: clear_mem_check_
+ Called from: function: stack_empty_check_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 270.
+
+Funtion: stack_preparing_
+ Called from: function: stack_ctor_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 322.
+
+Funtion: stack_validator_
+ Called from: function: stack_ctor_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 328.
+

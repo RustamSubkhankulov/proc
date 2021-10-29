@@ -1,0 +1,177 @@
+Funtion: stack_ctor_
+ Called from: function: main, file: E:\visual studio\projects\stack\main.cpp. Current line: 17.
+
+Funtion: stack_ctor_valid_check_
+ Called from: function: stack_ctor_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 247.
+
+Funtion: stack_empty_check_
+ Called from: function: stack_ctor_valid_check_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 417.
+
+Funtion: clear_mem_check_
+ Called from: function: stack_empty_check_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 203.
+
+Funtion: stack_preparing_
+ Called from: function: stack_ctor_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 255.
+
+Funtion: stack_validator_
+ Called from: function: stack_ctor_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 259.
+
+Funtion: stack_ctor_
+ Called from: function: main, file: E:\visual studio\projects\stack\main.cpp. Current line: 19.
+
+Funtion: stack_ctor_valid_check_
+ Called from: function: stack_ctor_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 247.
+
+Funtion: stack_empty_check_
+ Called from: function: stack_ctor_valid_check_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 417.
+
+Funtion: clear_mem_check_
+ Called from: function: stack_empty_check_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 203.
+
+Funtion: stack_poison_check_
+ Called from: function: stack_ctor_valid_check_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 417.
+
+Stack error code is 106
+An error occured during work with stack.
+ File: E:\visual studio\projects\stack\stack.cpp, function: stack_ctor_, line 250.
+Invalid stack pointer
+
+
+Funtion: stack_dtor_
+ Called from: function: main, file: E:\visual studio\projects\stack\main.cpp. Current line: 21.
+
+Funtion: stack_validator_
+ Called from: function: stack_dtor_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 340.
+
+Funtion: stack_dtor_
+ Called from: function: main, file: E:\visual studio\projects\stack\main.cpp. Current line: 21.
+
+Funtion: stack_poisoning_
+ Called from: function: stack_dtor_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 344.
+
+Funtion: stack_free_data_
+ Called from: function: stack_poisoning_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 365.
+
+Funtion: stack_poison_check_
+ Called from: function: stack_dtor_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 346.
+
+Funtion: stack_ctor_
+ Called from: function: main, file: E:\visual studio\projects\stack\main.cpp. Current line: 23.
+
+Funtion: stack_ctor_valid_check_
+ Called from: function: stack_ctor_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 247.
+
+Funtion: stack_empty_check_
+ Called from: function: stack_ctor_valid_check_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 417.
+
+Funtion: clear_mem_check_
+ Called from: function: stack_empty_check_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 203.
+
+Funtion: stack_poison_check_
+ Called from: function: stack_ctor_valid_check_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 417.
+
+Funtion: stack_preparing_
+ Called from: function: stack_ctor_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 255.
+
+Funtion: clear_mem_
+ Called from: function: stack_preparing_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 401.
+
+Funtion: clear_mem_check_
+ Called from: function: clear_mem_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 30.
+
+Funtion: clear_mem_
+ Called from: function: stack_preparing_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 402.
+
+Funtion: clear_mem_check_
+ Called from: function: clear_mem_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 30.
+
+Funtion: stack_validator_
+ Called from: function: stack_ctor_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 259.
+
+Funtion: stack_push_
+ Called from: function: main, file: E:\visual studio\projects\stack\main.cpp. Current line: 27.
+
+Funtion: stack_validator_
+ Called from: function: stack_push_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 475.
+
+Funtion: stack_set_size_
+ Called from: function: stack_push_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 477.
+
+Funtion: stack_validator_
+ Called from: function: stack_set_size_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 270.
+
+Funtion: stack_validator_
+ Called from: function: stack_set_size_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 314.
+
+Funtion: stack_validator_
+ Called from: function: stack_push_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 491.
+
+Funtion: stack_free_data_check_
+ Called from: function: stack_validator_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 119.
+
+Funtion: clear_mem_check_
+ Called from: function: stack_free_data_check_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 67.
+
+Funtion: stack_pop_
+ Called from: function: main, file: E:\visual studio\projects\stack\main.cpp. Current line: 29.
+
+Funtion: stack_validator_
+ Called from: function: stack_pop_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 517.
+
+Funtion: stack_free_data_check_
+ Called from: function: stack_validator_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 119.
+
+Funtion: clear_mem_check_
+ Called from: function: stack_free_data_check_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 67.
+
+Funtion: stack_poped_elem_set_zero_
+ Called from: function: stack_pop_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 538.
+
+Funtion: stack_resize_
+ Called from: function: stack_pop_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 541.
+
+Funtion: recalloc_
+ Called from: function: stack_resize_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 463.
+
+Funtion: stack_validator_
+ Called from: function: stack_pop_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 543.
+
+Funtion: stack_push_
+ Called from: function: main, file: E:\visual studio\projects\stack\main.cpp. Current line: 31.
+
+Funtion: stack_validator_
+ Called from: function: stack_push_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 475.
+
+Funtion: stack_validator_
+ Called from: function: stack_push_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 491.
+
+Funtion: stack_free_data_check_
+ Called from: function: stack_validator_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 119.
+
+Funtion: clear_mem_check_
+ Called from: function: stack_free_data_check_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 67.
+
+Funtion: stack_pop_
+ Called from: function: main, file: E:\visual studio\projects\stack\main.cpp. Current line: 33.
+
+Funtion: stack_validator_
+ Called from: function: stack_pop_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 517.
+
+Funtion: stack_free_data_check_
+ Called from: function: stack_validator_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 119.
+
+Funtion: clear_mem_check_
+ Called from: function: stack_free_data_check_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 67.
+
+Funtion: stack_poped_elem_set_zero_
+ Called from: function: stack_pop_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 538.
+
+Funtion: stack_resize_
+ Called from: function: stack_pop_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 541.
+
+Funtion: recalloc_
+ Called from: function: stack_resize_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 463.
+
+Funtion: stack_validator_
+ Called from: function: stack_pop_, file: E:\visual studio\projects\stack\stack.cpp. Current line: 543.
+

@@ -1,31 +1,68 @@
+Current position: 10. Input string : INIT . Written bytes: 01 
 
-Current position: 020 Command name: INIT       Written bytes: 01 
+Current position: 11. Input string : PUSH 5. Written bytes: 26 00 00 a0 40 
 
-Current position: 021 Command name: IN         Written bytes: 09 
+Current position: 16. Input string : POP ax . Written bytes: 47 01 
 
-Current position: 022 Command name: JMP        Written bytes: 0b 
+Current position: 18. Input string : DUMP . Written bytes: 0a 
 
- Argument value: ax  Written bytes: 01 
-Current position: 027 Command name: POP        Written bytes: 47 
+Current position: 19. Input string : CALL: factorial. Written bytes: 13 00 00 00 00 
 
-Current position: 029 Command name: IN         Written bytes: 09 
+Current position: 1e. Input string : PUSH ax  . Written bytes: 46 01 
 
- Argument value: ax  Written bytes: 01 
-Current position: 02a Command name: PUSH       Written bytes: c6 
+Current position: 20. Input string : OUT. Written bytes: 08 
 
-Current position: 02c Command name: IN         Written bytes: 09 
+Current position: 21. Input string : HLT. Written bytes: 00 
 
- Argument value: ax  Written bytes: 01 
-Current position: 02d Command name: POP        Written bytes: c7 
+Current position: 22. Input string : DUMP . Written bytes: 0a 
 
- Argument value: ax  Written bytes: 01 
-Current position: 02f Command name: PUSH       Written bytes: c6 
+Current position: 23. Input string : PUSH ax                 . Written bytes: 46 01 
 
-Current position: 031 Command name: ADD        Written bytes: 02 
+Current position: 25. Input string : POP cx                  . Written bytes: 47 03 
 
- Argument value: ax  Written bytes: 01 
-Current position: 032 Command name: PUSH       Written bytes: 46 
+Current position: 27. Input string : PUSH 1                  . Written bytes: 26 00 00 80 3f 
 
-Current position: 034 Command name: OUT        Written bytes: 08 
+Current position: 2c. Input string : PUSH cx. Written bytes: 46 03 
 
-Current position: 035 Command name: HLT        Written bytes: 00 
+Current position: 2e. Input string : DUMP . Written bytes: 0a 
+
+Current position: 2f. Input string : JE: END . Written bytes: 11 00 00 00 00 
+
+Current position: 34. Input string : PUSH ax   . Written bytes: 46 01 
+
+Current position: 36. Input string : PUSH cx . Written bytes: 46 03 
+
+Current position: 38. Input string : PUSH 1. Written bytes: 26 00 00 80 3f 
+
+Current position: 3d. Input string : SUB. Written bytes: 03 
+
+Current position: 3e. Input string : DUMP . Written bytes: 0a 
+
+Current position: 3f. Input string : MUL . Written bytes: 04 
+
+Current position: 40. Input string : DUMP . Written bytes: 0a 
+
+Current position: 41. Input string : POP ax  . Written bytes: 47 01 
+
+Current position: 43. Input string : DUMP . Written bytes: 0a 
+
+Current position: 44. Input string : PUSH cx. Written bytes: 46 03 
+
+Current position: 46. Input string : PUSH 1. Written bytes: 26 00 00 80 3f 
+
+Current position: 4b. Input string : SUB . Written bytes: 03 
+
+Current position: 4c. Input string : DUMP . Written bytes: 0a 
+
+Current position: 4d. Input string : POP cx . Written bytes: 47 03 
+
+Current position: 4f. Input string : DUMP . Written bytes: 0a 
+
+Current position: 50. Input string : JMP: REPEAT . Written bytes: 0c 27 00 00 00 
+
+Current position: 55. Input string : RET. Written bytes: 0b 
+
+Filled jump destination. Ip: 1a. Destination Ip: 22 
+
+Filled jump destination. Ip: 30. Destination Ip: 55 
+

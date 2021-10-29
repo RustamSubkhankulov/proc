@@ -1,0 +1,36 @@
+INIT 
+PUSH 5
+POP ax 
+DUMP 
+CALL: factorial
+PUSH ax  
+OUT
+HLT
+
+factorial :
+DUMP 
+PUSH ax                 ;пушим число
+POP cx                  ;попаем в счетчик 
+REPEAT:                 ;
+PUSH 1                  ;сравниваем счетчик с единицей
+PUSH cx
+DUMP 
+JE: END 
+PUSH ax   
+PUSH cx 
+PUSH 1
+SUB
+DUMP 
+MUL 
+DUMP 
+POP ax  
+DUMP 
+PUSH cx
+PUSH 1
+SUB 
+DUMP 
+POP cx 
+DUMP 
+JMP: REPEAT 
+END:
+RET

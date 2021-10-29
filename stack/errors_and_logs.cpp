@@ -8,12 +8,15 @@
 #include "stackconfig.h"
 #include "errors_and_logs.h"
 #include "../stack/errors.h"
+#include "../assembler/processor_general.h"
 
 /// Global variable for error code
 /// 
 /// Global int variable used for global error code
 /// that are not related to stack
 static int global_error_code = 0;
+
+static FILE* error_out;
 
 //===================================================
 
@@ -25,22 +28,22 @@ void set_global_error_code(int error_code) {
 
 //====================================================
 
-int global_error_process_(FUNC_FILE_LINE_PARAMS) {
+int global_error_process_(LOG_PARAMS) {
 
     if (global_error_code_check())
-        global_error_report(FUNC_FILE_LINE_USE_ARGS);
+        global_error_report(LOGS_ARGS_USE);
 
     return 0;
 }
 
 //====================================================
 
-int stack_error_process_(FUNC_FILE_LINE_PARAMS, stack* stack) {
+int stack_error_process_(LOG_PARAMS, stack* stack) {
 
     stack_ptr_check(stack);
 
     if (stack_error_code_check(stack))
-        stack_error_report(FUNC_FILE_LINE_USE_ARGS, stack);
+        stack_error_report(LOGS_ARGS_USE, stack);
 
     return 0;
 }
@@ -79,7 +82,7 @@ int set_stack_error_code(int error_code, stack* stack) {
 int set_error_output(const char* filename) {
 
     extern int global_error_code;
-    extern FILE* error_file;
+    extern FILE* error_out;
 
     if (filename == NULL) {
 
@@ -102,7 +105,7 @@ int set_error_output(const char* filename) {
         }
         else {
 
-            error_file = error_file_temp;
+            error_out = error_file_temp;
         }
     }
 
@@ -113,11 +116,11 @@ int set_error_output(const char* filename) {
 
 int close_error_output(void) {
 
-    extern FILE* error_file;
+    extern FILE* error_out;
 
-    if (error_file != stderr) {
+    if (error_out != stderr) {
 
-        int value = fclose(error_file);
+        int value = fclose(error_out);
 
         if (value == EOF) {
 
@@ -136,7 +139,7 @@ int close_error_output(void) {
 int set_log_output(const char* filename) {
 
     extern int global_error_code;
-    extern FILE* log_file;
+    extern FILE* log_output;
 
     if (filename == NULL) {
 
@@ -159,7 +162,7 @@ int set_log_output(const char* filename) {
         }
         else {
 
-            log_file = log_file_temp;
+            log_output = log_file_temp;
         }
     }
 
@@ -170,11 +173,11 @@ int set_log_output(const char* filename) {
 
 int close_log_output(void) {
 
-    extern FILE* log_file;
+    extern FILE* log_output;
 
-    if (log_file != stderr) {
+    if (log_output != stdout) {
 
-        int value = fclose(log_file);
+        int value = fclose(log_output);
 
         if (value == EOF) {
 
@@ -189,7 +192,7 @@ int close_log_output(void) {
 }
 //================================================
 
-int log_report_parameters_check(FUNC_FILE_LINE_PARAMS) {
+int log_report_parameters_check(LOG_PARAMS) {
 
     if (line <= 0 || file_name == NULL || func_name == NULL) {
 
@@ -204,15 +207,15 @@ int log_report_parameters_check(FUNC_FILE_LINE_PARAMS) {
 
 //================================================
 
-int log_report_(FUNC_FILE_LINE_PARAMS, const char* mother_func) {
+int log_report_(LOG_PARAMS, const char* mother_func) {
 
-    if (log_report_parameters_check(FUNC_FILE_LINE_USE_ARGS) == 0)
+    if (log_report_parameters_check(LOGS_ARGS_USE) == 0)
         return -1;
 
-    extern FILE* log_file;
+    extern FILE* log_output;
 
-    int value = fprintf(log_file, "Funtion: %s\n Called from: function: %s, file: %s."
-                                  " Current line: %d.\n\n", mother_func, FUNC_FILE_LINE_USE_ARGS);
+    int value = fprintf(log_output, "Funtion: %s\n Called from: function: %s, file: %s."
+                                  " Current line: %d.\n\n", mother_func, LOGS_ARGS_USE);
 
     if (value < 0) {
 
@@ -227,15 +230,15 @@ int log_report_(FUNC_FILE_LINE_PARAMS, const char* mother_func) {
 
 //================================================
 
-int smpl_log_report_(FUNC_FILE_LINE_PARAMS) {
+int smpl_log_report_(LOG_PARAMS) {
 
-    if (log_report_parameters_check(FUNC_FILE_LINE_USE_ARGS) == 0)
+    if (log_report_parameters_check(LOGS_ARGS_USE) == 0)
         return -1;
 
-    extern FILE* log_gile;
+    extern FILE* log_output;
 
-    int value = fprintf(log_file, "Function: %s, file: %s, line: %d \n \n",
-                                                  FUNC_FILE_LINE_USE_ARGS);
+    int value = fprintf(log_output, "Function: %s, file: %s, line: %d \n \n",
+                                                  LOGS_ARGS_USE);
 
     if (value < 0) {
 
@@ -250,20 +253,20 @@ int smpl_log_report_(FUNC_FILE_LINE_PARAMS) {
 
 //================================================
 
-int global_error_report(FUNC_FILE_LINE_PARAMS) {
+int global_error_report(LOG_PARAMS) {
 
-    extern FILE* error_file;
+    extern FILE* log_output;
     extern int global_error_code;
 
     //
-    fprintf(error_file, "Global_error-code is %d\n", global_error_code);
+    fprintf(log_output, "Global_error-code is %d\n", global_error_code);
     //
 
-    int value = fprintf(error_file, "An error occured.\n File: %s, function: %s, line %d.""\n",
+    int value = fprintf(log_output, "An error occured.\n File: %s, function: %s, line %d.""\n",
                                                                     file_name,
                                                                     func_name,
                                                                         line);
-    value += fprintf(error_file, "%s\n\n", get_error_descr(global_error_code));
+    value += fprintf(log_output, "%s\n\n", get_error_descr(global_error_code));
 
     if (value < 0) {
             
@@ -279,18 +282,18 @@ int global_error_report(FUNC_FILE_LINE_PARAMS) {
 
 //================================================
 
-int stack_error_report(FUNC_FILE_LINE_PARAMS, stack* stack) {
+int stack_error_report(LOG_PARAMS, stack* stack) {
 
     stack_ptr_check(stack);
 
-    extern FILE* error_file;
+    extern FILE* log_output;
 
-    fprintf(error_file, "Stack error code is %d\n", stack->error_code);
+    fprintf(log_output, "Stack error code is %d\n", stack->error_code);
     
-    int value = fprintf(error_file, "An error occured during work with stack.\n File: %s,"
+    int value = fprintf(log_output, "An error occured during work with stack.\n File: %s,"
                         " function: %s, line %d.""\n",  file_name, func_name, line);
 
-    value += fprintf(error_file, "%s\n\n", get_error_descr(stack->error_code));
+    value += fprintf(log_output, "%s\n\n", get_error_descr(stack->error_code));
 
     if (value < 0) {
 

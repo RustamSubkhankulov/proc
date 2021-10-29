@@ -9,6 +9,7 @@ NIGGERS:
     POP [ax] 
 HUI:
     PUSH [ax] 
+JMP   5 
     ADD
 CHLENI:
     PUSH ax

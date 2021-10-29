@@ -1,0 +1,405 @@
+Funtion: text_remove_comments_
+ Called from: function: main, file: assembler/asm_main.cpp. Current line: 16.
+
+Funtion: convert_operations_to_binary_
+ Called from: function: main, file: assembler/asm_main.cpp. Current line: 20.
+
+Funtion: open_listing_file_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 541.
+
+Funtion: _asmstruct_allocate_memory
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 553.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: _search_label_name
+ Called from: function: read_label_, file: assembler/assembler.cpp. Current line: 396.
+
+Funtion: _add_label
+ Called from: function: read_label_, file: assembler/assembler.cpp. Current line: 406.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: _search_label_name
+ Called from: function: process_string_, file: assembler/../text_files/jumps.txt. Current line: 9.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: read_label_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 567.
+
+Funtion: process_string_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 574.
+
+Funtion: _save_string_start_ip
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 111.
+
+Funtion: clear_opernamebuf_
+ Called from: function: process_string_, file: assembler/assembler.cpp. Current line: 149.
+
+Funtion: _jumps_fill_gaps
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 585.
+
+Funtion: _asmstruct_free_memory
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 587.
+
+Funtion: close_listing_file_
+ Called from: function: convert_operations_to_binary_, file: assembler/assembler.cpp. Current line: 588.
+
+Funtion: header_make_
+ Called from: function: main, file: assembler/asm_main.cpp. Current line: 21.
+
+Funtion: open_code_file_
+ Called from: function: main, file: assembler/asm_main.cpp. Current line: 23.
+
+Funtion: _write_code
+ Called from: function: main, file: assembler/asm_main.cpp. Current line: 26.
+
+Funtion: close_code_file_
+ Called from: function: main, file: assembler/asm_main.cpp. Current line: 27.
+

@@ -8,14 +8,17 @@
 #include "errors.h"
 #include "../assembler/processor_general.h"
 
-#define FUNC_FILE_LINE_PARAMS \
-        const char* func_name, const char* file_name, int line
+//===================================================================
+//===================================================================
 
-#define FUNC_FILE_LINE_GET_ARGS \
-        __FUNCTION__, __FILE__, __LINE__
+#define LOG_PARAMS \
+        const char* func_name, const char* file_name, int line, FILE* logs_file
 
-#define FUNC_FILE_LINE_USE_ARGS \
-        func_name, file_name, line
+#define LOG_ARGS \
+        __FUNCTION__, __FILE__, __LINE__, logs_file
+
+#define LOGS_ARGS_USE \
+        func_name, file_name, line, logs_file
 
 #define stack_ptr_check(stack)                                       \
                                                                      \
@@ -28,16 +31,16 @@
 #ifdef DEBUG
 
     #define global_error_process() \
-            global_error_process_(FUNC_FILE_LINE_GET_ARGS)
+            global_error_process_(LOG_ARGS)
 
     #define stack_error_process(stack) \
-            stack_error_process_(FUNC_FILE_LINE_GET_ARGS, stack) 
+            stack_error_process_(LOG_ARGS, stack) 
 
     #define stack_dump(stack) \
-            stack_dump_(stack, FUNC_FILE_LINE_GET_ARGS)
+            stack_dump_(stack, LOG_ARGS)
 
     #define stack_set_canaries(stack) \
-            stack_set_canaries_(stack, FUNC_FILE_LINE_GET_ARGS)
+            stack_set_canaries_(stack, LOG_ARGS)
 
 #else
 
@@ -50,7 +53,7 @@
 #ifdef LOGS
 
     #define log_report() \
-            log_report_(FUNC_FILE_LINE_USE_ARGS, __FUNCTION__)
+            log_report_(LOGS_ARGS_USE, __FUNCTION__)
 
     #define smpl_log_report() \
             smpl_log_report_(FUNC_FILE_LINE_GET_ARGS)
@@ -65,10 +68,10 @@
 #ifdef ASM_LOGS
 
     #define asm_log_report() \
-            log_report_(FUNC_FILE_LINE_USE_ARGS, __FUNCTION__)
+            log_report_(LOGS_ARGS_USE, __FUNCTION__)
 
     #define asm_smpl_log_report() \
-            smpl_log_report_(FUNC_FILE_LINE_GET_ARGS)
+            smpl_log_report_(LOG_ARGS)
 
 #else 
 
@@ -81,26 +84,26 @@
 #ifdef PROC_LOGS
 
         #define proc_log_report() \
-                log_report_(FUNC_FILE_LINE_USE_ARGS, __FUNCTION__)
+                log_report_(LOGS_ARGS_USE, __FUNCTION__)
 
         #define proc_smpl_log_report() \
-                smpl_log_report_(FUNC_FILE_LINE_GET_ARGS)
+                smpl_log_report_(LOG_ARGS)
 
 #else 
 
-#define asm_log_report() ""
+#define proc_log_report() ""
 
-#define asm_smpl_log_report() ""
+#define proc_smpl_log_report() ""
 
 #endif
 
 #ifdef DISASM_LOGS
 
         #define disasm_log_report() \
-                log_report_(FUNC_FILE_LINE_USE_ARGS, __FUNCTION__)
+                log_report_(LOGS_ARGS_USE, __FUNCTION__)
 
         #define disasm_smpl_log_report() \
-                smpl_log_report_(FUNC_FILE_LINE_GET_ARGS)
+                smpl_log_report_(LOG_ARGS)
 
 #else 
 
@@ -138,11 +141,11 @@ int close_error_output(void);
 /// of the function cirrently performing 
 /// @param const char* mother_func name of the functuion that is currenly working
 /// @return -1 if error occured and 0 if work ended successfully
-int log_report_(FUNC_FILE_LINE_PARAMS, const char* mother_func);
+int log_report_(LOG_PARAMS, const char* mother_func);
 
-int log_report_parameters_check(FUNC_FILE_LINE_PARAMS);
+int log_report_parameters_check(LOG_PARAMS);
 
-int smpl_log_report_(FUNC_FILE_LINE_PARAMS);
+int smpl_log_report_(LOG_PARAMS);
 
 //===========================================================================================
 
@@ -164,7 +167,7 @@ int global_error_code_check(void);
 /// Calles global_error_code_check and checks returning value
 /// Calles global_error_report if returning value is 1
 /// @return 0 if work ends successfully
-int global_error_process_(FUNC_FILE_LINE_PARAMS);
+int global_error_process_(LOG_PARAMS);
 
 /// Global error report
 /// 
@@ -172,7 +175,7 @@ int global_error_process_(FUNC_FILE_LINE_PARAMS);
 /// Prints code of global error,  file, function names and number of the line where 
 /// global_error_process was called
 /// @return 0 if work ends successfully and -1 if error occures
-int global_error_report(FUNC_FILE_LINE_PARAMS);
+int global_error_report(LOG_PARAMS);
 
 //===========================================================================================
 
@@ -196,7 +199,7 @@ int stack_error_code_check(stack* stack);
 /// Calles stack_error_report if returning value is 1
 /// @param stack* stack - stack structure pointer
 /// @return 0 if work ends successfully
-int stack_error_process_(FUNC_FILE_LINE_PARAMS, stack* stack);
+int stack_error_process_(LOG_PARAMS, stack* stack);
 
 /// Stack error report
 /// 
@@ -205,7 +208,7 @@ int stack_error_process_(FUNC_FILE_LINE_PARAMS, stack* stack);
 /// global_error_process was called\
 /// @param stack* stack - stack structure pointer 
 /// @return 0 if work ends successfully and -1 if error occures
-int stack_error_report(FUNC_FILE_LINE_PARAMS, stack* stack);
+int stack_error_report(LOG_PARAMS, stack* stack);
 
 //===========================================================================================
 

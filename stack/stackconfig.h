@@ -5,14 +5,16 @@
 /// Element type using in stack
 /// 
 /// Typedef for type that will be using in stack
-typedef int elem_t;
+typedef float elem_t;
 
 /// Name of the element
 ///
 /// String definition for the name of element type using in stack
-#define TYPE_NAME "int"
+#define TYPE_NAME "float"
 
-#define ELEM_SPEC "%d"
+#define ELEM_SPEC "%f"
+
+#define ELEM_SPEC_2 "%g"
 
 //===================================================================
 
@@ -21,7 +23,7 @@ typedef int elem_t;
 /// Definition debug to turn on debug 
 /// In debug mode turns on stack_validator_() and error_processing functions
 /// that prints messages in file that is pointed by error_file 
-//#define DEBUG
+#define DEBUG
 
 //===================================================================
 
@@ -96,11 +98,12 @@ enum { REDUCE = 1000, EXPAND = 2000 };
 /// Log file FILE* pointer
 /// 
 /// Default file pointer to log file
-static FILE* log_file = stderr;
+//static FILE* log_file = stderr;
 
 /// Error file FILE* pointer
 /// 
 /// Default error file pointer
-static FILE* error_file = stderr;
+//static FILE* error_file = stderr;
 
+static FILE* log_output = stdout;
 

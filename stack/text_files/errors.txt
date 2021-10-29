@@ -1,0 +1,6 @@
+Stack error code is 106
+An error occured during work with stack.
+ File: E:\visual studio\projects\stack\stack.cpp, function: stack_ctor_, line 250.
+Invalid stack pointer
+
+

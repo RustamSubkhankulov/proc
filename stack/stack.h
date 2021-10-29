@@ -50,20 +50,11 @@ struct stack_origin {
     };
 #endif
 
-/// Definition used for better looking code
-///
-/// Contains parameters func_name, file_name and line for log_report and other functions
-#define FUNC_FILE_LINE_PARAMS const char* func_name, const char* file_name, int line
-
-#define FUNC_FILE_LINE_GET_ARGS __FUNCTION__, __FILE__, __LINE__
-
-#define FUNC_FILE_LINE_USE_ARGS func_name, file_name, line
-
 //===================================================================
 
 #ifdef DEBUG
     #define stack_validator(stack)\
-            stack_validator_(stack, FUNC_FILE_LINE_GET_ARGS)
+            stack_validator_(stack, LOG_ARGS)
 #else
     #define stack_validator(stack) ""
 #endif
@@ -71,101 +62,101 @@ struct stack_origin {
 //===================================================================
 
 #define stack_save_hash(stack) \
-        stack_save_hash_(stack, FUNC_FILE_LINE_GET_ARGS)
+        stack_save_hash_(stack, LOG_ARGS)
 
 #define stack_ctor(stack) \
-        stack_ctor_(stack, FUNC_FILE_LINE_GET_ARGS)
+        stack_ctor_(stack, LOG_ARGS)
 
 #define stack_dtor(stack) \
-        stack_dtor_(stack, FUNC_FILE_LINE_GET_ARGS)
+        stack_dtor_(stack, LOG_ARGS)
 
 #define stack_pop(stack, err) \
-        stack_pop_(stack, FUNC_FILE_LINE_GET_ARGS, err)
+        stack_pop_(stack, err, LOG_ARGS)
 
-//#define stack_pop(stack) stack_pop_(stack, FUNC_FILE_LINE_GET_ARGS)
+//#define stack_pop(stack) stack_pop_(stack, LOG_ARGS)
 
 #define stack_push(stack, value) \
-        stack_push_(stack, value, FUNC_FILE_LINE_GET_ARGS)
+        stack_push_(stack, value, LOG_ARGS)
 
 //#define stack_summ(stack, err) \
-//        stack_summ_(stack, FUNC_FILE_LINE_GET_ARGS, err)
+//        stack_summ_(stack, LOG_ARGS, err)
 
 //===================================================================
 
 #define stack_empty_check(stack) \
-        stack_empty_check_(stack, FUNC_FILE_LINE_GET_ARGS)
+        stack_empty_check_(stack, LOG_ARGS)
 
 #define stack_poison_check(stack) \
-        stack_poison_check_(stack, FUNC_FILE_LINE_GET_ARGS)
+        stack_poison_check_(stack, LOG_ARGS)
 
 #define stack_ctor_valid_check(stack) \
-        stack_ctor_valid_check_(stack, FUNC_FILE_LINE_GET_ARGS)
+        stack_ctor_valid_check_(stack, LOG_ARGS)
 
 #define stack_poped_elem_set_zero(stack) \
-        stack_poped_elem_set_zero_(stack, FUNC_FILE_LINE_GET_ARGS)
+        stack_poped_elem_set_zero_(stack, LOG_ARGS)
 
 #define stack_poisoning(stack) \
-        stack_poisoning_(stack, FUNC_FILE_LINE_GET_ARGS)
+        stack_poisoning_(stack, LOG_ARGS)
 
 #define stack_preparing(stack) \
-        stack_preparing_(stack, FUNC_FILE_LINE_GET_ARGS)
+        stack_preparing_(stack, LOG_ARGS)
 
 #define stack_resize(stack, param) \
-        stack_resize_(stack, param, FUNC_FILE_LINE_GET_ARGS)
+        stack_resize_(stack, param, LOG_ARGS)
 
 #define stack_set_size(stack, size) \
-        stack_set_size_(stack, size, FUNC_FILE_LINE_GET_ARGS)
+        stack_set_size_(stack, size, LOG_ARGS)
 
 #define stack_set_origin(stack) \
-        stack_set_origin_(stack, FUNC_FILE_LINE_GET_ARGS)
+        stack_set_origin_(stack, LOG_ARGS)
 
 #define stack_free_data(stack) \
-        stack_free_data_(stack, FUNC_FILE_LINE_GET_ARGS)
+        stack_free_data_(stack, LOG_ARGS)
 
 //===================================================================
 
 #define clear_mem_check(base, n, size) \
-        clear_mem_check_(base, n, size, FUNC_FILE_LINE_GET_ARGS)
+        clear_mem_check_(base, n, size, LOG_ARGS)
 
 #define clear_mem(base, n, size) \
-        clear_mem_(base, n, size, FUNC_FILE_LINE_GET_ARGS)
+        clear_mem_(base, n, size, LOG_ARGS)
 
 #define recalloc(ptr, number, prev_number, size_of_elem)  \
         recalloc_(ptr, number, prev_number, size_of_elem, \
-                                 FUNC_FILE_LINE_GET_ARGS)
+                                 LOG_ARGS)
 
 #define stack_free_data_check(stack) \
-        stack_free_data_check_(stack, FUNC_FILE_LINE_GET_ARGS)
+        stack_free_data_check_(stack, LOG_ARGS)
 
 #define stack_set_canaries(stack) \
-        stack_set_canaries_(stack, FUNC_FILE_LINE_GET_ARGS)
+        stack_set_canaries_(stack, LOG_ARGS)
 
 //===================================================================
 
 #define stack_save_hash(stack) \
-        stack_save_hash_(stack, FUNC_FILE_LINE_GET_ARGS)
+        stack_save_hash_(stack, LOG_ARGS)
 
 #define stack_base_hash_check(stack) \
-        stack_base_hash_check_(stack, FUNC_FILE_LINE_GET_ARGS)
+        stack_base_hash_check_(stack, LOG_ARGS)
 
 #define stack_data_hash_check(stack) \
-        stack_data_hash_check_(stack, FUNC_FILE_LINE_GET_ARGS)
+        stack_data_hash_check_(stack, LOG_ARGS)
 
 #define get_hash(base, len) \
-        get_hash_(base, len, FUNC_FILE_LINE_GET_ARGS)
+        get_hash_(base, len, LOG_ARGS)
 
 //===================================================================
 
 #define stack_out(stack) \
-        stack_out_(stack, FUNC_FILE_LINE_GET_ARGS)
+        stack_out_(stack, LOG_ARGS)
 
 //===================================================================
 
-static int stack_poison_check_(stack* stack, FUNC_FILE_LINE_PARAMS);
+static int stack_poison_check_(stack* stack, LOG_PARAMS);
 
-static int stack_empty_check_(stack* stack, FUNC_FILE_LINE_PARAMS);
+static int stack_empty_check_(stack* stack, LOG_PARAMS);
 
-static int stack_ctor_valid_check_(stack* stack, FUNC_FILE_LINE_PARAMS);
+static int stack_ctor_valid_check_(stack* stack, LOG_PARAMS);
 
 //===================================================================
 
@@ -178,7 +169,7 @@ static int stack_ctor_valid_check_(stack* stack, FUNC_FILE_LINE_PARAMS);
 /// Updates hash if hash protection is on
 /// Calles stack_validator_() in the end to check preparing for the work
 /// @return -1 if error occured and 0 if work ended successfully
-int stack_ctor_(stack* stack, FUNC_FILE_LINE_PARAMS);
+int stack_ctor_(stack* stack, LOG_PARAMS);
 
 /// Stack destructor function
 ///
@@ -186,7 +177,7 @@ int stack_ctor_(stack* stack, FUNC_FILE_LINE_PARAMS);
 /// Calles stack_poisoning_() function 
 /// Calles stack_poison_check to check if poisoning ended successfully
 /// @return 0 if work ende successfully and -1 if error occured
-int stack_dtor_(stack* stack, FUNC_FILE_LINE_PARAMS);
+int stack_dtor_(stack* stack, LOG_PARAMS);
 
 /// Pushes element to the stack
 ///
@@ -196,46 +187,46 @@ int stack_dtor_(stack* stack, FUNC_FILE_LINE_PARAMS);
 /// if stack needs to be extended
 /// Updates hash in HASH protection mode
 /// Calles stack_validator_ at the end
-int stack_push_(stack* stack, elem_t value, FUNC_FILE_LINE_PARAMS);
+int stack_push_(stack* stack, elem_t value, LOG_PARAMS);
 
-elem_t stack_pop_(stack* stack, FUNC_FILE_LINE_PARAMS, int* err = NULL);
+elem_t stack_pop_(stack* stack, LOG_PARAMS, int* err = NULL);
 
-//elem_t stack_summ_(stack* stack, FUNC_FILE_LINE_PARAMS, int* err = NULL);
+//elem_t stack_summ_(stack* stack, LOG_PARAMS, int* err = NULL);
 //
 
 //===================================================================
 
-static int stack_poped_elem_set_zero_(stack* stack, FUNC_FILE_LINE_PARAMS);
+static int stack_poped_elem_set_zero_(stack* stack, LOG_PARAMS);
 
-static int stack_poisoning_(stack* stack, FUNC_FILE_LINE_PARAMS);
+static int stack_poisoning_(stack* stack, LOG_PARAMS);
 
-static int stack_preparing_(stack* stack, FUNC_FILE_LINE_PARAMS);
-
-//===================================================================
-
-static int stack_resize_(stack* stack, int param, FUNC_FILE_LINE_PARAMS);
-
-int stack_set_size_(stack* stack, int new_size, FUNC_FILE_LINE_PARAMS);
+static int stack_preparing_(stack* stack, LOG_PARAMS);
 
 //===================================================================
 
-int stack_validator_(stack* stack, FUNC_FILE_LINE_PARAMS);
+static int stack_resize_(stack* stack, int param, LOG_PARAMS);
 
-int stack_out_(stack* stack, FUNC_FILE_LINE_PARAMS);
-
-int stack_dump_(stack* stack, FUNC_FILE_LINE_PARAMS);
-
-static int stack_free_data_check_(stack* stack, FUNC_FILE_LINE_PARAMS);
+int stack_set_size_(stack* stack, int new_size, LOG_PARAMS);
 
 //===================================================================
 
-static int stack_set_origin_(stack* stack, FUNC_FILE_LINE_PARAMS);
+int stack_validator_(stack* stack, LOG_PARAMS);
+
+int stack_out_(stack* stack, LOG_PARAMS);
+
+int stack_dump_(stack* stack, LOG_PARAMS);
+
+static int stack_free_data_check_(stack* stack, LOG_PARAMS);
+
+//===================================================================
+
+static int stack_set_origin_(stack* stack, LOG_PARAMS);
 
 static int stack_empty_orig_file_check(stack* stack);
 
 static int stack_empty_orig_func_check(stack* stack);
 
-static int stack_set_canaries_(stack* stack, FUNC_FILE_LINE_PARAMS);
+static int stack_set_canaries_(stack* stack, LOG_PARAMS);
 
 //===================================================================
 
@@ -243,21 +234,21 @@ static int stack_set_canaries_(stack* stack, FUNC_FILE_LINE_PARAMS);
 ///
 /// Saves hash of the stack structure and stack data in stack
 /// base_hash and data_hash after changes in stack
-static int stack_save_hash_(stack* stack, FUNC_FILE_LINE_PARAMS);
+static int stack_save_hash_(stack* stack, LOG_PARAMS);
 
-static int64_t get_hash_(char* base, unsigned int len, FUNC_FILE_LINE_PARAMS);
+static int64_t get_hash_(char* base, unsigned int len, LOG_PARAMS);
 
-static int stack_data_hash_check_(stack* stack, FUNC_FILE_LINE_PARAMS);
+static int stack_data_hash_check_(stack* stack, LOG_PARAMS);
 
-static int stack_base_hash_check_(stack* stack, FUNC_FILE_LINE_PARAMS);
+static int stack_base_hash_check_(stack* stack, LOG_PARAMS);
 
 //===================================================================
 
 void* recalloc_(void* ptr, int number, int prev_number, int size_of_elem,
-                                                  FUNC_FILE_LINE_PARAMS);
+                                                  LOG_PARAMS);
 
-int clear_mem_check_(void* base, int n, int size, FUNC_FILE_LINE_PARAMS);
+int clear_mem_check_(void* base, int n, int size, LOG_PARAMS);
 
-int clear_mem_(void* base, int n, int size, FUNC_FILE_LINE_PARAMS);
+int clear_mem_(void* base, int n, int size, LOG_PARAMS);
 
 //===================================================================

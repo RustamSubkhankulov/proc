@@ -11,7 +11,7 @@
 
 //============================================================
 
-int64_t get_hash_(char* base, unsigned int len, FUNC_FILE_LINE_PARAMS) {
+int64_t get_hash_(char* base, unsigned int len, LOG_PARAMS) {
 
     log_report();
 
@@ -64,7 +64,7 @@ int64_t get_hash_(char* base, unsigned int len, FUNC_FILE_LINE_PARAMS) {
 
 //============================================================
 
-static int stack_save_hash_(stack* stack, FUNC_FILE_LINE_PARAMS) {
+static int stack_save_hash_(stack* stack, LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
@@ -91,7 +91,7 @@ static int stack_save_hash_(stack* stack, FUNC_FILE_LINE_PARAMS) {
 
 //============================================================
 
-int stack_data_hash_check_(stack* stack, FUNC_FILE_LINE_PARAMS) {
+int stack_data_hash_check_(stack* stack, LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
@@ -117,7 +117,7 @@ int stack_data_hash_check_(stack* stack, FUNC_FILE_LINE_PARAMS) {
 
 //============================================================
 
-int stack_base_hash_check_(stack* stack, FUNC_FILE_LINE_PARAMS) {
+int stack_base_hash_check_(stack* stack, LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
@@ -138,7 +138,7 @@ int stack_base_hash_check_(stack* stack, FUNC_FILE_LINE_PARAMS) {
 
 //============================================================
 
-static int stack_set_canaries_(stack* stack, FUNC_FILE_LINE_PARAMS) {
+static int stack_set_canaries_(stack* stack, LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
@@ -153,7 +153,7 @@ static int stack_set_canaries_(stack* stack, FUNC_FILE_LINE_PARAMS) {
 
 //============================================================
 
-int clear_mem_(void* base, int n, int size, FUNC_FILE_LINE_PARAMS) {
+int clear_mem_(void* base, int n, int size, LOG_PARAMS) {
 
     log_report();
 
@@ -172,7 +172,7 @@ int clear_mem_(void* base, int n, int size, FUNC_FILE_LINE_PARAMS) {
 
 //=============================================================
 
-int clear_mem_check_(void* base, int n, int size, FUNC_FILE_LINE_PARAMS) {
+int clear_mem_check_(void* base, int n, int size, LOG_PARAMS) {
 
     log_report();
 
@@ -200,7 +200,7 @@ int clear_mem_check_(void* base, int n, int size, FUNC_FILE_LINE_PARAMS) {
 
 //=============================================================
 
-static int stack_free_data_check_(stack* stack, FUNC_FILE_LINE_PARAMS) {
+static int stack_free_data_check_(stack* stack, LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
@@ -221,7 +221,7 @@ static int stack_free_data_check_(stack* stack, FUNC_FILE_LINE_PARAMS) {
 }
 //=============================================================
 
-int stack_validator_(stack* stack, FUNC_FILE_LINE_PARAMS) {
+int stack_validator_(stack* stack, LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
@@ -304,8 +304,10 @@ int stack_validator_(stack* stack, FUNC_FILE_LINE_PARAMS) {
         #endif
 
         if  (stack->origin.orig_file_name != NULL
-             &&(clear_mem_check(stack->origin.orig_file_name, NAMEBUFSIZE, sizeof(char)) == 1
-             || strncmp(stack->origin.orig_file_name, POISONSTR, NAMEBUFSIZE) == 0)) {
+             &&(clear_mem_check(stack->origin.orig_file_name, 
+                                NAMEBUFSIZE, sizeof(char)) == 1
+             || strncmp(stack->origin.orig_file_name, 
+                                POISONSTR, NAMEBUFSIZE) == 0)) {
 
             set_stack_error_code(STK_INV_ORIG_FILE, stack);
             stack_error_process(stack);
@@ -314,8 +316,10 @@ int stack_validator_(stack* stack, FUNC_FILE_LINE_PARAMS) {
         }
 
         if  (stack->origin.orig_func_name != NULL
-             && (clear_mem_check(stack->origin.orig_func_name, NAMEBUFSIZE, sizeof(char)) == 1
-             || strncmp(stack->origin.orig_func_name, POISONSTR, NAMEBUFSIZE) == 0)) {
+             && (clear_mem_check(stack->origin.orig_func_name,
+                                 NAMEBUFSIZE, sizeof(char)) == 1
+             || strncmp(stack->origin.orig_func_name, 
+                                 POISONSTR, NAMEBUFSIZE) == 0)) {
 
             set_stack_error_code(STK_INV_ORIG_FUNC, stack);
             stack_error_process(stack);
@@ -411,7 +415,7 @@ int stack_validator_(stack* stack, FUNC_FILE_LINE_PARAMS) {
     if (check_val > 0) {
 
         #ifdef DEBUG
-            stack_dump_(stack, FUNC_FILE_LINE_USE_ARGS);
+            stack_dump_(stack, LOGS_ARGS_USE);
         #endif
 
         return -1;
@@ -423,7 +427,7 @@ int stack_validator_(stack* stack, FUNC_FILE_LINE_PARAMS) {
 //=============================================================
 
 void* recalloc_(void* ptr, int number, int prev_number, int size_of_elem,
-                                                    FUNC_FILE_LINE_PARAMS) {
+                                                    LOG_PARAMS) {
     log_report();
 
     if (ptr == NULL) {
@@ -459,7 +463,7 @@ void* recalloc_(void* ptr, int number, int prev_number, int size_of_elem,
 
 //==============================================================
 
-static int stack_poison_check_(stack* stack, FUNC_FILE_LINE_PARAMS) {
+static int stack_poison_check_(stack* stack, LOG_PARAMS) {
     
     log_report();
     stack_ptr_check(stack);
@@ -497,7 +501,7 @@ static int stack_poison_check_(stack* stack, FUNC_FILE_LINE_PARAMS) {
 
 //==============================================================
 
-static int stack_empty_check_(stack* stack, FUNC_FILE_LINE_PARAMS) {
+static int stack_empty_check_(stack* stack, LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
@@ -508,7 +512,7 @@ static int stack_empty_check_(stack* stack, FUNC_FILE_LINE_PARAMS) {
 //==============================================================
 #ifdef DEBUG
 
-static int stack_set_origin_(stack* stack, FUNC_FILE_LINE_PARAMS) {
+static int stack_set_origin_(stack* stack, LOG_PARAMS) {
 
     stack_ptr_check(stack);
 
@@ -522,7 +526,7 @@ static int stack_set_origin_(stack* stack, FUNC_FILE_LINE_PARAMS) {
 #endif
 //==============================================================
 
-int stack_ctor_(stack* stack,  FUNC_FILE_LINE_PARAMS) {
+int stack_ctor_(stack* stack,  LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
@@ -538,7 +542,7 @@ int stack_ctor_(stack* stack,  FUNC_FILE_LINE_PARAMS) {
     stack_preparing(stack);
 
     #ifdef DEBUG
-        stack_set_origin_(stack, FUNC_FILE_LINE_USE_ARGS);
+        stack_set_origin_(stack, LOGS_ARGS_USE);
     #endif
 
     #ifdef HASH
@@ -554,7 +558,7 @@ int stack_ctor_(stack* stack,  FUNC_FILE_LINE_PARAMS) {
 
 //==============================================================
 
-int stack_set_size_(stack* stack, int new_size, FUNC_FILE_LINE_PARAMS) {
+int stack_set_size_(stack* stack, int new_size, LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
@@ -651,7 +655,7 @@ int stack_set_size_(stack* stack, int new_size, FUNC_FILE_LINE_PARAMS) {
 
 //==============================================================
 
-int stack_free_data_(stack* stack, FUNC_FILE_LINE_PARAMS) {
+int stack_free_data_(stack* stack, LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
@@ -671,7 +675,7 @@ int stack_free_data_(stack* stack, FUNC_FILE_LINE_PARAMS) {
 
 //==============================================================
 
-int stack_dtor_(stack* stack, FUNC_FILE_LINE_PARAMS) {
+int stack_dtor_(stack* stack, LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
@@ -695,7 +699,7 @@ int stack_dtor_(stack* stack, FUNC_FILE_LINE_PARAMS) {
 
 //==============================================================
 
-int stack_poisoning_(stack* stack, FUNC_FILE_LINE_PARAMS) {
+int stack_poisoning_(stack* stack, LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
@@ -732,7 +736,7 @@ int stack_poisoning_(stack* stack, FUNC_FILE_LINE_PARAMS) {
 
 //==============================================================
 
-int stack_preparing_(stack* stack, FUNC_FILE_LINE_PARAMS) {
+int stack_preparing_(stack* stack, LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
@@ -773,7 +777,7 @@ int stack_preparing_(stack* stack, FUNC_FILE_LINE_PARAMS) {
 
 //==============================================================
 
-int stack_ctor_valid_check_(stack* stack, FUNC_FILE_LINE_PARAMS) {
+int stack_ctor_valid_check_(stack* stack, LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
@@ -785,7 +789,7 @@ int stack_ctor_valid_check_(stack* stack, FUNC_FILE_LINE_PARAMS) {
 
 //==============================================================
 
-static int stack_resize_(stack* stack, int param, FUNC_FILE_LINE_PARAMS) {
+static int stack_resize_(stack* stack, int param, LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
@@ -864,7 +868,7 @@ static int stack_resize_(stack* stack, int param, FUNC_FILE_LINE_PARAMS) {
 
 //==============================================================
 
-int stack_push_(stack* stack, elem_t value, FUNC_FILE_LINE_PARAMS) {
+int stack_push_(stack* stack, elem_t value, LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
@@ -898,7 +902,7 @@ int stack_push_(stack* stack, elem_t value, FUNC_FILE_LINE_PARAMS) {
 
 //===============================================================
 
-int stack_poped_elem_set_zero_(stack* stack, FUNC_FILE_LINE_PARAMS) {
+int stack_poped_elem_set_zero_(stack* stack, LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
@@ -913,7 +917,7 @@ int stack_poped_elem_set_zero_(stack* stack, FUNC_FILE_LINE_PARAMS) {
 
 //===============================================================
 
-elem_t stack_pop_(stack* stack, FUNC_FILE_LINE_PARAMS, int* err) {
+elem_t stack_pop_(stack* stack, LOG_PARAMS, int* err) {
 
     int err_val = 0;
 
@@ -1010,30 +1014,30 @@ int stack_empty_orig_func_check(stack* stack) {
 
 //===================================================================
 
-int stack_out_(stack* stack, FUNC_FILE_LINE_PARAMS) {
+int stack_out_(stack* stack, LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
 
     stack_validator(stack);
 
-    extern FILE* error_file;
+    extern FILE* log_output;
 
-    fprintf(error_file, "\n" "Stack <%p> Element type: " TYPE_NAME
+    fprintf(log_output, "\n" "Stack <%p> Element type: " TYPE_NAME
                         "\n", stack);
 
-    fprintf(error_file, "Size of stack element " "%lu" "\n",
+    fprintf(log_output, "Size of stack element " "%lu" "\n",
                          sizeof(elem_t));
 
-    fprintf(error_file, "Stack capacity: %d. Number of element in stack %d" "\n\n",
+    fprintf(log_output, "Stack capacity: %d. Number of element in stack %d" "\n\n",
                          stack->capacity, stack->count);
 
     for (int count = 1; count <= stack->count; count++)
 
-        fprintf(error_file, "[%d] " ELEM_SPEC "\n", count,
+        fprintf(log_output, "[%d] " ELEM_SPEC "\n", count,
                             stack->data[count - 1]);
 
-    fprintf(error_file, "\n\n");
+    fprintf(log_output, "\n\n");
 
     return 0;
 }
@@ -1042,100 +1046,100 @@ int stack_out_(stack* stack, FUNC_FILE_LINE_PARAMS) {
 
 #ifdef DEBUG 
 
-int stack_dump_(stack* stack, FUNC_FILE_LINE_PARAMS) {
+int stack_dump_(stack* stack, LOG_PARAMS) {
 
     log_report();
     stack_ptr_check(stack);
 
-    extern FILE* error_file;
+    extern FILE* log_output;
 
-    fprintf(error_file, "*************************************************\n\n");
+    fprintf(log_output, "*************************************************\n\n");
 
-    fprintf(error_file, "\n""Critical error occured during work with stack.""\n");
-    fprintf(error_file, "\n""Function srack_dump has been called from %s, %s line %d""\n",
-                                                                 FUNC_FILE_LINE_USE_ARGS);
+    fprintf(log_output, "\n""Critical error occured during work with stack.""\n");
+    fprintf(log_output, "\n""Function srack_dump has been called from %s, %s line %d""\n",
+                                                                 LOGS_ARGS_USE);
 
-    fprintf(error_file, "Stack address <%p>. Stack element type %s""\n\n", stack, TYPE_NAME);
+    fprintf(log_output, "Stack address <%p>. Stack element type %s""\n\n", stack, TYPE_NAME);
 
 
-    fprintf(error_file, "Stack origin conctruction file name: ");
+    fprintf(log_output, "Stack origin conctruction file name: ");
 
     if (stack->origin.orig_file_name == NULL)
-        fprintf(error_file, "ERROR: NULL POINTER\n");
+        fprintf(log_output, "ERROR: NULL POINTER\n");
 
     if (stack->origin.orig_file_name != NULL
         && stack_empty_orig_file_check(stack) == 1)
-        fprintf(error_file, "ERROR: EMPTY ORIG FILE NAME\n");
+        fprintf(log_output, "ERROR: EMPTY ORIG FILE NAME\n");
 
-    else fprintf(error_file, "%s\n", stack->origin.orig_file_name);
+    else fprintf(log_output, "%s\n", stack->origin.orig_file_name);
 
 
-    fprintf(error_file, "Stack origin conctruction function name: ");
+    fprintf(log_output, "Stack origin conctruction function name: ");
 
     if (stack->origin.orig_func_name == NULL)
-        fprintf(error_file, "ERROR: NULL POINTER\n");
+        fprintf(log_output, "ERROR: NULL POINTER\n");
 
     if (stack->origin.orig_func_name != NULL
         && stack_empty_orig_func_check(stack) == 1)
-        fprintf(error_file, "ERROR: EMPTY ORIG FUNCTION NAME\n");
+        fprintf(log_output, "ERROR: EMPTY ORIG FUNCTION NAME\n");
 
-    else fprintf(error_file, "%s\n", stack->origin.orig_func_name);
+    else fprintf(log_output, "%s\n", stack->origin.orig_func_name);
 
 
-    fprintf(error_file, "Stack origin construction line: ");
+    fprintf(log_output, "Stack origin construction line: ");
 
     if (stack->origin.orig_line == 0)
-        fprintf(error_file, "ERROR: Line number equals zero\n");
+        fprintf(log_output, "ERROR: Line number equals zero\n");
     else
-        fprintf(error_file, "%d\n", stack->origin.orig_line);
+        fprintf(log_output, "%d\n", stack->origin.orig_line);
 
 
-    fprintf(error_file, "Size of element type is %lu\n", sizeof(elem_t));
+    fprintf(log_output, "Size of element type is %lu\n", sizeof(elem_t));
 
     if (stack->size_of_elem != sizeof(elem_t))
-        fprintf(error_file, "ERROR: Size of element type is not equal"
+        fprintf(log_output, "ERROR: Size of element type is not equal"
                             " size of stack element\n");
 
     if (stack->size_of_elem == 0)
-        fprintf(error_file, "ERROR: Size of element equals zero\n");
+        fprintf(log_output, "ERROR: Size of element equals zero\n");
 
     if (stack->size_of_elem != 0)
-        fprintf(error_file, "Size of stack element: %d\n", stack->size_of_elem);
+        fprintf(log_output, "Size of stack element: %d\n", stack->size_of_elem);
 
     #ifdef CANARIES
-        fprintf(error_file, "Canary protection: ");
+        fprintf(log_output, "Canary protection: ");
 
         if (stack->canary1 == CANARY_VAL)
-            fprintf(error_file, "left is valid, ");
+            fprintf(log_output, "left is valid, ");
         else
-            fprintf(error_file, "ERROR left canary protection failed, ");
+            fprintf(log_output, "ERROR left canary protection failed, ");
 
         if (stack->canary2 == CANARY_VAL)
-            fprintf(error_file, "right is valid\n\n");
+            fprintf(log_output, "right is valid\n\n");
         else
-            fprintf(error_file, "ERROR right canary protection failed\n\n");
+            fprintf(log_output, "ERROR right canary protection failed\n\n");
 
     #endif
 
-    fprintf(error_file, "Stack capacity : %d. Number of elements in stack: %d\n",
+    fprintf(log_output, "Stack capacity : %d. Number of elements in stack: %d\n",
         stack->capacity, stack->count);
 
     if (stack->capacity == 0)
-        fprintf(error_file, "ERROR: Capacity equals zero\n");
+        fprintf(log_output, "ERROR: Capacity equals zero\n");
 
     /*if (stack->count == 0 && stack->capacity != 0)
-        fprintf(error_file, "ERROR: Size of element can not equal zero"
+        fprintf(log_output, "ERROR: Size of element can not equal zero"
                             " until capacity is zero too\n");*/
 
     if (stack->capacity < 0)
-        fprintf(error_file, "ERROR: Capacity is negative value\n");
+        fprintf(log_output, "ERROR: Capacity is negative value\n");
 
     if (stack->count < 0)
 
-        fprintf(error_file, "ERROR: Number of elements in stack is negative value\n");
+        fprintf(log_output, "ERROR: Number of elements in stack is negative value\n");
 
     if (stack->count > stack->capacity)
-        fprintf(error_file, "ERROR: Capacity cannot be lower than number"
+        fprintf(log_output, "ERROR: Capacity cannot be lower than number"
                             " of elements in stack\n");
 
     
@@ -1145,7 +1149,7 @@ int stack_dump_(stack* stack, FUNC_FILE_LINE_PARAMS) {
         && stack->data != (elem_t*)POISON_PTR
         && stack->data != (elem_t*)DEFAULT_PTR 
         && *(int64_t*)((char*)stack->data - sizeof(int64_t)) != CANARY_VAL)
-        fprintf(error_file, "ERROR: left canary protection of stack->data has fallen.\n");
+        fprintf(log_output, "ERROR: left canary protection of stack->data has fallen.\n");
 
     else if (stack->capacity >= 0
         && stack->data != NULL
@@ -1154,28 +1158,28 @@ int stack_dump_(stack* stack, FUNC_FILE_LINE_PARAMS) {
         && stack->size_of_elem == sizeof(elem_t)
         && *(int64_t*)((char*)stack->data + stack->capacity * stack->size_of_elem) != CANARY_VAL)
 
-        fprintf(error_file, "ERROR: right canary protection of stack->data has fallen.\n");
+        fprintf(log_output, "ERROR: right canary protection of stack->data has fallen.\n");
 
     else
-        fprintf(error_file, "Canary protection works\n");
+        fprintf(log_output, "Canary protection works\n");
 
-    fprintf(error_file, "Stack data pointer: ");
+    fprintf(log_output, "Stack data pointer: ");
 
     if (stack->data == NULL)
-        fprintf(error_file, "ERROR: NULL data pointer\n\n");
+        fprintf(log_output, "ERROR: NULL data pointer\n\n");
 
     else if (stack->data == (elem_t*)DEFAULT_PTR && stack->capacity != 0)
-        fprintf(error_file, "ERROR: Data pointer is incorrect.\n "
+        fprintf(log_output, "ERROR: Data pointer is incorrect.\n "
                             "Can not equal DEFAULT_PTR after pushing or size setting");
 
     else if (stack->data == (elem_t*)POISON_PTR)
-        fprintf(error_file, "ERROR: POISON_PTR for stack->data means that stack was destructed");
+        fprintf(log_output, "ERROR: POISON_PTR for stack->data means that stack was destructed");
 
     else if (stack->data == (elem_t*)DEFAULT_PTR && stack->count == 0)
-        fprintf(error_file, "Data pointer is DEFAUlT_PTR "
+        fprintf(log_output, "Data pointer is DEFAUlT_PTR "
                             "Probably stack has not been used to push elements");
 
-    else fprintf(error_file, "<%p>\n", stack->data);
+    else fprintf(log_output, "<%p>\n", stack->data);
 
     if (stack->data != NULL
         && stack->data != (elem_t*)POISON_PTR
@@ -1187,23 +1191,23 @@ int stack_dump_(stack* stack, FUNC_FILE_LINE_PARAMS) {
                             stack->capacity - stack->count + 1,
                             stack->size_of_elem)) {
 
-        fprintf(error_file, "Elements of the stack: \n\n");
+        fprintf(log_output, "Elements of the stack: \n\n");
 
         for (int count = 0; count < stack->count; count++) {
 
-            fprintf(error_file, "[%d]" ELEM_SPEC "\n", count, stack->data[count - 1]);
+            fprintf(log_output, "[%d]" ELEM_SPEC "\n", count, stack->data[count - 1]);
         }
 
         //if ((TYPE_NAME == "int" || TYPE_NAME == "integer"))
         //    for (int count = 0; count < stack->count; count++) {
 
-        //        fprintf(error_file, "[%d] %5d\n", count, stack->data[count]);
+        //        fprintf(log_output, "[%d] %5d\n", count, stack->data[count]);
         //    }
 
         //if ((TYPE_NAME == "double" || TYPE_NAME == "float") && stack->count != 0)
         //    for (int count = 0; count < stack->count; count++) {
 
-        //        //fprintf(error_file, "[%d] %5g\n", count, stack->data[count]);
+        //        //fprintf(log_output, "[%d] %5g\n", count, stack->data[count]);
         //    }
     }
 
@@ -1214,17 +1218,14 @@ int stack_dump_(stack* stack, FUNC_FILE_LINE_PARAMS) {
                             stack->capacity - stack->count + 1, 
                             stack->size_of_elem))
 
-        fprintf(error_file, "ERROR: Stack free data is not empty\n");
+        fprintf(log_output, "ERROR: Stack free data is not empty\n");
 
     if (stack->count == 0 && stack->capacity == 0)
-        fprintf(error_file, "Stack is empty\n");
+        fprintf(log_output, "Stack is empty\n");
 
     stack_error_process(stack);
 
     stack_free_data(stack);
-
-    close_log_output();
-    close_error_output();
 
     assert(0 && "CRITICAL ERROR: Stack dump has been called");
     return 0;

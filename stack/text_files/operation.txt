@@ -1,0 +1,10 @@
+start
+push 2
+push 7
+mul
+push 8
+push 4
+div
+add
+out
+hlt

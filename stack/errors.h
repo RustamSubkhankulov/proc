@@ -167,6 +167,16 @@
 #define RAM_COMMANDS_INV_NUMBER_   "Number of ram using commands counted during compilation "\
 								   "is not equal to the number counted during executing prohramm"
 
+#define LABEL_NAME_TOO_THICK_      "Label name is too big, consider increasing LABEL_NAME_SIZE "\
+								   "in processor_general.h"
+
+#define REPEATING_LABELS_          "Label is repeating. Consider renaming one of the repeating labels"
+
+#define INV_DESTINATION_OF_JMP_    "Invalid destination ip in jump command"
+
+#define NO_LABEL_FOR_JUMP_		   "No label founded for jump destination"
+
+#define INV_LABEL_DEFINITION_      "Invalid label definition"
 //===================================================================
 
 enum stack_error_codes {
@@ -204,65 +214,78 @@ enum stack_error_codes {
 
 enum global_error_codes {
 
-	INV_FILE_NAME             = 300,
-	FOPEN_ERROR               = 301,
-	FILE_OUTPUT_ERROR         = 302,
-	CLEAR_MEM_CHECK_ERR       = 303,
-	INV_ERROR_CODE            = 304,
-	INV_STACK_PTR             = 305,
-	RECALLOC_INV_NUM_OF_ELEMS = 306,
-	RECALLOC_INV_POINTER      = 307,
-	RECALLOC_INV_SIZE_OF_ELEM = 308,
-	CANNOT_ALLOCATE_MEM       = 309,
-	TEXT_PROCESSING_ERR       = 310,
-	LOG_REPORT_PARAMS_ERR     = 311,
-	INV_TEXT_PTR              = 312,
-	FCLOSE_ERROR              = 313,
-	TEXT_NO_STRINGS           = 314,
-	NULL_STRING_TEXT          = 315,
-	EMPTY_OPER_NAME           = 316,
-	INV_OPER_NAME             = 317,
-	INV_FILE_PTR              = 318,
-	INV_HDR_PTR               = 319,
-	FWRITE_ERR                = 320,
-	INV_INSTRUCTION_STR       = 321,
-	CODE_FILE_SIZE_ERR        = 322,
-	EMPTY_OPERNAMEBUF         = 323,
-	INV_PROCSTRUCT_PTR        = 324,
-	FREAD_ERR				  = 325,
-	HDR_INV_SIGN              = 326,
-	HDR_INV_VERSION           = 327,
-	HDR_INV_FILE_SIZE         = 328,
-	HDR_INV_CMD_NUMBERS       = 329,
-	INV_CODE_ARRAY_PTR        = 330,
-	PROC_INV_IP               = 331,
-	PROC_INV_OPER_CODE        = 332,
-	PROC_DIV_BY_ZERO          = 333,
-	FILE_INPUT_ERR            = 334,
-	INV_INSTR_PTR             = 335,
-	INV_COMMANDS_NUMBER		  = 336,
-	INV_ARGUMENTS_NUMBER      = 337,
-	NULL_STRING               = 338,
-	INV_REGISTER_NUMBER       = 339,
-	INV_REGISTER_ARGS_NUMBER  = 340,
-	INV_DISASMSTRUCT_PTR      = 341,
-	DISASM_INV_OPER_CODE      = 342,
-	FTELL_INV_VALUE           = 343,
-	ASMSTRUCT_INV_PTR         = 344,
-	ASMSTRUCT_EMPTY_CODE_ARR  = 345,
-	ASMSTRUCT_INV_IP          = 346,
-	RAM_INV_ADDRESS           = 347,
-	RAM_COMMANDS_INV_NUMBER   = 348
+	INV_FILE_NAME             = 200,
+	FOPEN_ERROR               = 201,
+	FILE_OUTPUT_ERROR         = 202,
+	CLEAR_MEM_CHECK_ERR       = 203,
+	INV_ERROR_CODE            = 204,
+	INV_STACK_PTR             = 205,
+	RECALLOC_INV_NUM_OF_ELEMS = 206,
+	RECALLOC_INV_POINTER      = 207,
+	RECALLOC_INV_SIZE_OF_ELEM = 208,
+	CANNOT_ALLOCATE_MEM       = 209,
 };
 
 enum assembler_errors {
 
+	TEXT_PROCESSING_ERR       = 301,
+	INV_TEXT_PTR              = 302,
+	EMPTY_OPER_NAME           = 302,
+	INV_OPER_NAME             = 302,
+	FWRITE_ERR                = 304,
+	INV_INSTRUCTION_STR       = 305,
+	CODE_FILE_SIZE_ERR        = 306,
+	EMPTY_OPERNAMEBUF         = 307,
+	INV_PROCSTRUCT_PTR        = 308,
+	FREAD_ERR				  = 309,
+	LABEL_NAME_TOO_THICK      = 310,
+	REPEATING_LABELS          = 311,
+	INV_DESTINATION_OF_JMP    = 312,
+	NO_LABEL_FOR_JUMP         = 313,
+	INV_LABEL_DEFINITION      = 314,
+	NO_COMMAND_IN_STRING      = 315,
+	CANNOT_ADD_NEW_LABEL      = 316,
+	INV_STRING_NUMBER         = 317,
+	INV_ASMSTRUCT_PTR 		  = 318,
+	ASMSTRUCT_INV_PTR         = 319,
+	ASMSTRUCT_EMPTY_CODE_ARR  = 320,
+	ASMSTRUCT_INV_IP          = 321,
 };
 
 enum general_errors {
 
+	HDR_INV_SIGN              = 401,
+	HDR_INV_VERSION           = 402,
+	HDR_INV_FILE_SIZE         = 403,
+	HDR_INV_CMD_NUMBERS       = 404,
+	INV_FILE_PTR              = 405,
+	INV_HDR_PTR               = 406,
+	FCLOSE_ERROR              = 407,
+	TEXT_NO_STRINGS           = 408,
+	NULL_STRING_TEXT          = 409,
+	LOG_REPORT_PARAMS_ERR     = 410,
 };
 
 enum processor_errors {
 
+	INV_CODE_ARRAY_PTR        = 501,
+	PROC_INV_IP               = 502,
+	PROC_INV_OPER_CODE        = 503,
+	PROC_DIV_BY_ZERO          = 504,
+	FILE_INPUT_ERR            = 505,
+	INV_INSTR_PTR             = 506,
+	NULL_STRING               = 507,
+	INV_REGISTER_NUMBER       = 508,
+	INV_REGISTER_ARGS_NUMBER  = 509,
+	RAM_INV_ADDRESS           = 510,
+	INV_ARGUMENT_NUMBER       = 511,
+	INV_RAM_NUMBER            = 512,
+	STACK_PROC_ERROR          = 513,
+	PROC_INVALID_CMND         = 514
+};
+
+enum disasm_errors {
+
+	INV_DISASMSTRUCT_PTR      = 601,
+	DISASM_INV_OPER_CODE      = 602,
 };
