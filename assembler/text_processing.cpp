@@ -14,7 +14,7 @@
 //#define PRINTNUMBEROFLINE
 
 //=============================================================================
-char* text_init(const char* filename, struct Text* text) {
+char* text_init(const char* filename, struct Text* text, LOG_PARAMS) {
 
 	extern FILE* log_file;
 
@@ -25,7 +25,7 @@ char* text_init(const char* filename, struct Text* text) {
 
 	errno = 0;
 
-	char* buf = file_to_buf_copy(filename, text);
+	char* buf = file_to_buf_copy(filename, text, LOG_ARGS);
 	if (buf == NULL)
 		return NULL;
 
@@ -41,7 +41,7 @@ char* text_init(const char* filename, struct Text* text) {
 }
 
 //============================================================================
-char* file_to_buf_copy(const char* filename, struct Text* text) {
+char* file_to_buf_copy(const char* filename, struct Text* text, LOG_PARAMS) {
 
 	assert(filename != NULL);
 	assert(text != NULL);
@@ -54,7 +54,7 @@ char* file_to_buf_copy(const char* filename, struct Text* text) {
 	if (text->size < -1)
 		return NULL;
 
-	char* buf = copy_data_to_buf(text->size, fp);
+	char* buf = copy_data_to_buf(text->size, fp, LOG_ARGS);
 
 	fclose(fp);
 
@@ -88,7 +88,7 @@ long file_size(FILE* fp) {
 }
 
 //============================================================================
-char* copy_data_to_buf(long size, FILE* fp) {
+char* copy_data_to_buf(long size, FILE* fp, LOG_PARAMS) {
 
 	smpl_log_report();
 

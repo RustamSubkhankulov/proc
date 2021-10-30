@@ -1,0 +1,50 @@
+CALL: main 
+DUMP 
+HLT 
+
+main:
+DUMP 
+PUSH 5          ;argument
+DUMP 
+POP bx
+DUMP 
+PUSH 1
+DUMP 
+POP cx 
+DUMP 
+CALL: factorial 
+DUMP 
+PUSH cx 
+DUMP 
+OUT
+DUMP 
+RET
+
+factorial:
+DUMP 
+PUSH bx 
+DUMP
+PUSH 1
+DUMP 
+JAE: END
+DUMP 
+PUSH cx
+DUMP   
+PUSH bx
+DUMP  
+MUL 
+DUMP 
+POP cx
+DUMP  
+PUSH bx
+DUMP  
+PUSH 1
+DUMP 
+SUB 
+DUMP 
+POP bx
+DUMP  
+CALL: factorial
+END: 
+DUMP
+RET

@@ -38,61 +38,61 @@ typedef struct Disasmstruct disasmstruct;
 //===================================================================
 
 #define init_disasmstruct(disasmstruct, fp) \
-       _init_disasmstruct(disasmstruct, fp, FUNC_FILE_LINE_GET_ARGS)
+       _init_disasmstruct(disasmstruct, fp, LOG_ARGS)
 
 #define disassemble_code(disasmstruct, fp) \
-       _disassemble_code(disasmstruct, fp, FUNC_FILE_LINE_GET_ARGS) 
+       _disassemble_code(disasmstruct, fp, LOG_ARGS) 
 
 #define disasm_final_check(disasmstruct) \
-       _disasm_final_check(disasmstruct, FUNC_FILE_LINE_GET_ARGS) 
+       _disasm_final_check(disasmstruct, LOG_ARGS) 
 
 #define dtor_disasmstruct(disasmstruct) \
-       _dtor_disasmstruct(disasmstruct, FUNC_FILE_LINE_GET_ARGS) 
+       _dtor_disasmstruct(disasmstruct, LOG_ARGS) 
 
 #define disasm_header_check(disasmstruct) \
-       _disasm_header_check(disasmstruct, FUNC_FILE_LINE_GET_ARGS)
+       _disasm_header_check(disasmstruct, LOG_ARGS)
        
 #define disassemble_command(disasmstruct, fp) \
-       _disassemble_command(disasmstruct, fp, FUNC_FILE_LINE_GET_ARGS)   
+       _disassemble_command(disasmstruct, fp, LOG_ARGS)   
 
 //===================================================================
 
 #define open_file(filename, mode, err) \
-       _open_file(filename, mode, err, FUNC_FILE_LINE_GET_ARGS) 
+       _open_file(filename, mode, err, LOG_ARGS) 
 
 #define close_file(fp) \
-       _close_file(fp ,FUNC_FILE_LINE_GET_ARGS)
+       _close_file(fp ,LOG_ARGS)
 
 #define open_disasm_listing_file() \
-       _opem_disasm_listing_file(FUNC_FILE_LINE_GET_ARGS)
+       _opem_disasm_listing_file(LOG_ARGS)
 
 #define close_disasm_listing_file() \
-       _close_disasm_listing_file(FUNC_FILE_LINE_GET_ARGS) 
+       _close_disasm_listing_file(LOG_ARGS) 
 //===================================================================
 
 int _init_disasmstruct(disasmstruct* disasmstruct, FILE* fp,
-                                      FUNC_FILE_LINE_PARAMS);
+                                      LOG_PARAMS);
 
-int _disasm_header_check(disasmstruct* disasmstruct, FUNC_FILE_LINE_PARAMS);
+int _disasm_header_check(disasmstruct* disasmstruct, LOG_PARAMS);
 
 int _disassemble_command(disasmstruct* disasmstruct, FILE* disasm_output,
-                                                   FUNC_FILE_LINE_PARAMS);
+                                                   LOG_PARAMS);
 
 int _disassemble_code(disasmstruct* disasmstruct, FILE* disasm_output,
-                                                FUNC_FILE_LINE_PARAMS);
+                                                LOG_PARAMS);
 
-int _disasm_final_check(disasmstruct* disasmstruct, FUNC_FILE_LINE_PARAMS);
+int _disasm_final_check(disasmstruct* disasmstruct, LOG_PARAMS);
 
-int _dtor_disasmstruct(disasmstruct* disasmstruct, FUNC_FILE_LINE_PARAMS);
+int _dtor_disasmstruct(disasmstruct* disasmstruct, LOG_PARAMS);
 
 //===================================================================
 
 FILE* _open_file(const char* filename, const char* mode,  int* err,  
-                                            FUNC_FILE_LINE_PARAMS);
+                                            LOG_PARAMS);
 
 
-int _close_file(FILE* fp, FUNC_FILE_LINE_PARAMS);
+int _close_file(FILE* fp, LOG_PARAMS);
 
-int _open_disasm_listing_file(FUNC_FILE_LINE_PARAMS);
+int _open_disasm_listing_file(LOG_PARAMS);
 
-int _close_disasm_listing_file(FUNC_FILE_LINE_PARAMS);
+int _close_disasm_listing_file(LOG_PARAMS);

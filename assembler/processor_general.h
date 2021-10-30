@@ -41,7 +41,7 @@ struct Header {
 
 //===================================================================
 
-#define DEF_CMD_(num, name, code, hash) \
+#define DEF_CMD_(num, name, code, hash, instructions) \
 	CMD_##name = (code),
 
 enum operations {
@@ -108,10 +108,4 @@ static const char* DISASM_LISTING_FILENAME = "text_files/disasm_listing.txt";
 
 #define PROC_DEBUG
 
-
-static FILE* proc_output = stdout;
-
-static FILE* proc_input = stdin;
-
 //===================================================================
-

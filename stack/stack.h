@@ -52,6 +52,17 @@ struct stack_origin {
 
 //===================================================================
 
+#define LOG_PARAMS \
+        const char* func_name, const char* file_name, int line, FILE* logs_file
+
+#define LOG_ARGS \
+        __FUNCTION__, __FILE__, __LINE__, logs_file
+
+#define LOGS_ARGS_USE \
+        func_name, file_name, line, logs_file
+
+//===================================================================
+
 #ifdef DEBUG
     #define stack_validator(stack)\
             stack_validator_(stack, LOG_ARGS)
@@ -71,15 +82,10 @@ struct stack_origin {
         stack_dtor_(stack, LOG_ARGS)
 
 #define stack_pop(stack, err) \
-        stack_pop_(stack, err, LOG_ARGS)
-
-//#define stack_pop(stack) stack_pop_(stack, LOG_ARGS)
+        stack_pop_(stack, LOG_ARGS, err)
 
 #define stack_push(stack, value) \
         stack_push_(stack, value, LOG_ARGS)
-
-//#define stack_summ(stack, err) \
-//        stack_summ_(stack, LOG_ARGS, err)
 
 //===================================================================
 
@@ -222,9 +228,9 @@ static int stack_free_data_check_(stack* stack, LOG_PARAMS);
 
 static int stack_set_origin_(stack* stack, LOG_PARAMS);
 
-static int stack_empty_orig_file_check(stack* stack);
+static int stack_empty_orig_file_check(stack* stack, LOG_PARAMS);
 
-static int stack_empty_orig_func_check(stack* stack);
+static int stack_empty_orig_func_check(stack* stack, LOG_PARAMS);
 
 static int stack_set_canaries_(stack* stack, LOG_PARAMS);
 

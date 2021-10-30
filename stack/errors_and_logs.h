@@ -9,6 +9,12 @@
 #include "../assembler/processor_general.h"
 
 //===================================================================
+
+#define $ if (err_val == -1) return -1;
+
+#define set_stack_error_code(error_code, stack) \
+       _set_stack_error_code(error_code, stack, LOG_ARGS)
+
 //===================================================================
 
 #define LOG_PARAMS \
@@ -114,6 +120,9 @@
 #endif
 //===================================================================
 
+FILE* open_log_file(const char* filename);
+
+int close_log_file(FILE* logs_file);
 
 /// Log output
 /// 
@@ -184,14 +193,14 @@ int global_error_report(LOG_PARAMS);
 /// Sets up value in error_code variable in stack structure
 /// @param int error_code code of the error that will be set up in error_code variable
 /// @return 0 if work ends successfully and -1 if error occures
-int set_stack_error_code(int error_code, struct stack* stack);
+int _set_stack_error_code(int error_code, struct stack* stack, LOG_PARAMS);
 
 /// Checks stack error code
 /// 
 /// Checks error_code variable in stack structure if it is 0 (no errors ocureed)
 /// @param stack* stack - stack structure pointer 
 /// @return 1 if stack error_code variable is not zero and 0 if it is
-int stack_error_code_check(stack* stack);
+int stack_error_code_check(stack* stack, LOG_PARAMS);
 
 /// Stack error processing function
 /// 

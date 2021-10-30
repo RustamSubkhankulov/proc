@@ -7,7 +7,7 @@
 
 
 int _init_disasmstruct(disasmstruct* disasmstruct, FILE* fp,
-                                      FUNC_FILE_LINE_PARAMS) {
+                                      LOG_PARAMS) {
 
     disasm_log_report();
 
@@ -34,7 +34,7 @@ int _init_disasmstruct(disasmstruct* disasmstruct, FILE* fp,
 
 //===================================================================
 
-int _disasm_header_check(disasmstruct* disasmstruct, FUNC_FILE_LINE_PARAMS) {
+int _disasm_header_check(disasmstruct* disasmstruct, LOG_PARAMS) {
 
     disasm_log_report();
 
@@ -63,7 +63,7 @@ int _disasm_header_check(disasmstruct* disasmstruct, FUNC_FILE_LINE_PARAMS) {
 //===================================================================
 
 int _disassemble_code(disasmstruct* disasmstruct, FILE* disasm_output,
-                                                FUNC_FILE_LINE_PARAMS) {
+                                                LOG_PARAMS) {
 
     disasm_log_report();
     disasmstruct_ptr_check(disasmstruct);
@@ -163,7 +163,7 @@ case code: {                                                        \
 //===================================================================
 
 int _disassemble_command(disasmstruct* disasmstruct, FILE* disasm_output, 
-                                                   FUNC_FILE_LINE_PARAMS) {
+                                                   LOG_PARAMS) {
 
     disasm_log_report();
 
@@ -187,7 +187,7 @@ int _disassemble_command(disasmstruct* disasmstruct, FILE* disasm_output,
 
 //==================================================================
 
-int _disasm_final_check(disasmstruct* disasmstruct, FUNC_FILE_LINE_PARAMS) {
+int _disasm_final_check(disasmstruct* disasmstruct, LOG_PARAMS) {
 
     disasm_log_report();
 
@@ -214,7 +214,7 @@ int _disasm_final_check(disasmstruct* disasmstruct, FUNC_FILE_LINE_PARAMS) {
 
 //===================================================================
 
-int _dtor_disasmstruct(disasmstruct* disasmstruct, FUNC_FILE_LINE_PARAMS) {
+int _dtor_disasmstruct(disasmstruct* disasmstruct, LOG_PARAMS) {
 
     disasm_log_report();
 
@@ -231,7 +231,7 @@ int _dtor_disasmstruct(disasmstruct* disasmstruct, FUNC_FILE_LINE_PARAMS) {
 
 //===================================================================
 
-int _open_disasm_listing_file(FUNC_FILE_LINE_PARAMS) {
+int _open_disasm_listing_file(LOG_PARAMS) {
 
     disasm_log_report();
     extern FILE* disasm_listing_file;
@@ -248,7 +248,7 @@ int _open_disasm_listing_file(FUNC_FILE_LINE_PARAMS) {
 
 //===================================================================
 
-int _close_disasm_listing_file(FUNC_FILE_LINE_PARAMS) {
+int _close_disasm_listing_file(LOG_PARAMS) {
 
     disasm_log_report();
     extern FILE* disasm_listing_file;
@@ -264,7 +264,7 @@ int _close_disasm_listing_file(FUNC_FILE_LINE_PARAMS) {
 //===================================================================
 
 FILE* _open_file(const char* filename, const char* mode, int* err,  
-                                            FUNC_FILE_LINE_PARAMS) {
+                                            LOG_PARAMS) {
 
     disasm_log_report();
 
@@ -301,7 +301,7 @@ FILE* _open_file(const char* filename, const char* mode, int* err,
 
 //===================================================================
 
-int _close_file(FILE* fp, FUNC_FILE_LINE_PARAMS) {
+int _close_file(FILE* fp, LOG_PARAMS) {
 
     if (fp != stdin) {
 

@@ -976,7 +976,7 @@ elem_t stack_pop_(stack* stack, LOG_PARAMS, int* err) {
 
 #ifdef DEBUG
 
-int stack_empty_orig_file_check(stack* stack) {
+int stack_empty_orig_file_check(stack* stack, LOG_PARAMS) {
 
     //log_report();
     stack_ptr_check(stack);
@@ -996,7 +996,7 @@ int stack_empty_orig_file_check(stack* stack) {
 
 #ifdef DEBUG
 
-int stack_empty_orig_func_check(stack* stack) {
+int stack_empty_orig_func_check(stack* stack, LOG_PARAMS) {
 
     //log_report();
     stack_ptr_check(stack);
@@ -1021,23 +1021,22 @@ int stack_out_(stack* stack, LOG_PARAMS) {
 
     stack_validator(stack);
 
-    extern FILE* log_output;
-
-    fprintf(log_output, "\n" "Stack <%p> Element type: " TYPE_NAME
+    fprintf(logs_file, "\n" "Stack <%p> Element type: " TYPE_NAME
                         "\n", stack);
 
-    fprintf(log_output, "Size of stack element " "%lu" "\n",
+    fprintf(logs_file, "Size of stack element " "%lu" "\n",
                          sizeof(elem_t));
 
-    fprintf(log_output, "Stack capacity: %d. Number of element in stack %d" "\n\n",
+    fprintf(logs_file, "Stack capacity: %d. Number of element in stack %d" "\n\n",
                          stack->capacity, stack->count);
 
     for (int count = 1; count <= stack->count; count++)
 
-        fprintf(log_output, "[%d] " ELEM_SPEC "\n", count,
-                            stack->data[count - 1]);
+        fprintf(logs_file, "[%d] DEC " ELEM_SPEC "  HEX %x" "\n", count,
+                                                 stack->data[count - 1], 
+                                           (int)stack->data[count - 1]);
 
-    fprintf(log_output, "\n\n");
+    fprintf(logs_file, "\n\n");
 
     return 0;
 }
@@ -1051,95 +1050,93 @@ int stack_dump_(stack* stack, LOG_PARAMS) {
     log_report();
     stack_ptr_check(stack);
 
-    extern FILE* log_output;
+    fprintf(logs_file, "*************************************************\n\n");
 
-    fprintf(log_output, "*************************************************\n\n");
-
-    fprintf(log_output, "\n""Critical error occured during work with stack.""\n");
-    fprintf(log_output, "\n""Function srack_dump has been called from %s, %s line %d""\n",
+    fprintf(logs_file, "\n""Critical error occured during work with stack.""\n");
+    fprintf(logs_file, "\n""Function srack_dump has been called from %s, %s line %d""\n",
                                                                  LOGS_ARGS_USE);
 
-    fprintf(log_output, "Stack address <%p>. Stack element type %s""\n\n", stack, TYPE_NAME);
+    fprintf(logs_file, "Stack address <%p>. Stack element type %s""\n\n", stack, TYPE_NAME);
 
 
-    fprintf(log_output, "Stack origin conctruction file name: ");
+    fprintf(logs_file, "Stack origin conctruction file name: ");
 
     if (stack->origin.orig_file_name == NULL)
-        fprintf(log_output, "ERROR: NULL POINTER\n");
+        fprintf(logs_file, "ERROR: NULL POINTER\n");
 
     if (stack->origin.orig_file_name != NULL
-        && stack_empty_orig_file_check(stack) == 1)
-        fprintf(log_output, "ERROR: EMPTY ORIG FILE NAME\n");
+        && stack_empty_orig_file_check(stack, LOGS_ARGS_USE) == 1)
+        fprintf(logs_file, "ERROR: EMPTY ORIG FILE NAME\n");
 
-    else fprintf(log_output, "%s\n", stack->origin.orig_file_name);
+    else fprintf(logs_file, "%s\n", stack->origin.orig_file_name);
 
 
-    fprintf(log_output, "Stack origin conctruction function name: ");
+    fprintf(logs_file, "Stack origin conctruction function name: ");
 
     if (stack->origin.orig_func_name == NULL)
-        fprintf(log_output, "ERROR: NULL POINTER\n");
+        fprintf(logs_file, "ERROR: NULL POINTER\n");
 
     if (stack->origin.orig_func_name != NULL
-        && stack_empty_orig_func_check(stack) == 1)
-        fprintf(log_output, "ERROR: EMPTY ORIG FUNCTION NAME\n");
+        && stack_empty_orig_func_check(stack, LOGS_ARGS_USE) == 1)
+        fprintf(logs_file, "ERROR: EMPTY ORIG FUNCTION NAME\n");
 
-    else fprintf(log_output, "%s\n", stack->origin.orig_func_name);
+    else fprintf(logs_file, "%s\n", stack->origin.orig_func_name);
 
 
-    fprintf(log_output, "Stack origin construction line: ");
+    fprintf(logs_file, "Stack origin construction line: ");
 
     if (stack->origin.orig_line == 0)
-        fprintf(log_output, "ERROR: Line number equals zero\n");
+        fprintf(logs_file, "ERROR: Line number equals zero\n");
     else
-        fprintf(log_output, "%d\n", stack->origin.orig_line);
+        fprintf(logs_file, "%d\n", stack->origin.orig_line);
 
 
-    fprintf(log_output, "Size of element type is %lu\n", sizeof(elem_t));
+    fprintf(logs_file, "Size of element type is %lu\n", sizeof(elem_t));
 
     if (stack->size_of_elem != sizeof(elem_t))
-        fprintf(log_output, "ERROR: Size of element type is not equal"
+        fprintf(logs_file, "ERROR: Size of element type is not equal"
                             " size of stack element\n");
 
     if (stack->size_of_elem == 0)
-        fprintf(log_output, "ERROR: Size of element equals zero\n");
+        fprintf(logs_file, "ERROR: Size of element equals zero\n");
 
     if (stack->size_of_elem != 0)
-        fprintf(log_output, "Size of stack element: %d\n", stack->size_of_elem);
+        fprintf(logs_file, "Size of stack element: %d\n", stack->size_of_elem);
 
     #ifdef CANARIES
-        fprintf(log_output, "Canary protection: ");
+        fprintf(logs_file, "Canary protection: ");
 
         if (stack->canary1 == CANARY_VAL)
-            fprintf(log_output, "left is valid, ");
+            fprintf(logs_file, "left is valid, ");
         else
-            fprintf(log_output, "ERROR left canary protection failed, ");
+            fprintf(logs_file, "ERROR left canary protection failed, ");
 
         if (stack->canary2 == CANARY_VAL)
-            fprintf(log_output, "right is valid\n\n");
+            fprintf(logs_file, "right is valid\n\n");
         else
-            fprintf(log_output, "ERROR right canary protection failed\n\n");
+            fprintf(logs_file, "ERROR right canary protection failed\n\n");
 
     #endif
 
-    fprintf(log_output, "Stack capacity : %d. Number of elements in stack: %d\n",
+    fprintf(logs_file, "Stack capacity : %d. Number of elements in stack: %d\n",
         stack->capacity, stack->count);
 
     if (stack->capacity == 0)
-        fprintf(log_output, "ERROR: Capacity equals zero\n");
+        fprintf(logs_file, "ERROR: Capacity equals zero\n");
 
     /*if (stack->count == 0 && stack->capacity != 0)
-        fprintf(log_output, "ERROR: Size of element can not equal zero"
+        fprintf(logs_file, "ERROR: Size of element can not equal zero"
                             " until capacity is zero too\n");*/
 
     if (stack->capacity < 0)
-        fprintf(log_output, "ERROR: Capacity is negative value\n");
+        fprintf(logs_file, "ERROR: Capacity is negative value\n");
 
     if (stack->count < 0)
 
-        fprintf(log_output, "ERROR: Number of elements in stack is negative value\n");
+        fprintf(logs_file, "ERROR: Number of elements in stack is negative value\n");
 
     if (stack->count > stack->capacity)
-        fprintf(log_output, "ERROR: Capacity cannot be lower than number"
+        fprintf(logs_file, "ERROR: Capacity cannot be lower than number"
                             " of elements in stack\n");
 
     
@@ -1149,7 +1146,7 @@ int stack_dump_(stack* stack, LOG_PARAMS) {
         && stack->data != (elem_t*)POISON_PTR
         && stack->data != (elem_t*)DEFAULT_PTR 
         && *(int64_t*)((char*)stack->data - sizeof(int64_t)) != CANARY_VAL)
-        fprintf(log_output, "ERROR: left canary protection of stack->data has fallen.\n");
+        fprintf(logs_file, "ERROR: left canary protection of stack->data has fallen.\n");
 
     else if (stack->capacity >= 0
         && stack->data != NULL
@@ -1158,28 +1155,28 @@ int stack_dump_(stack* stack, LOG_PARAMS) {
         && stack->size_of_elem == sizeof(elem_t)
         && *(int64_t*)((char*)stack->data + stack->capacity * stack->size_of_elem) != CANARY_VAL)
 
-        fprintf(log_output, "ERROR: right canary protection of stack->data has fallen.\n");
+        fprintf(logs_file, "ERROR: right canary protection of stack->data has fallen.\n");
 
     else
-        fprintf(log_output, "Canary protection works\n");
+        fprintf(logs_file, "Canary protection works\n");
 
-    fprintf(log_output, "Stack data pointer: ");
+    fprintf(logs_file, "Stack data pointer: ");
 
     if (stack->data == NULL)
-        fprintf(log_output, "ERROR: NULL data pointer\n\n");
+        fprintf(logs_file, "ERROR: NULL data pointer\n\n");
 
     else if (stack->data == (elem_t*)DEFAULT_PTR && stack->capacity != 0)
-        fprintf(log_output, "ERROR: Data pointer is incorrect.\n "
+        fprintf(logs_file, "ERROR: Data pointer is incorrect.\n "
                             "Can not equal DEFAULT_PTR after pushing or size setting");
 
     else if (stack->data == (elem_t*)POISON_PTR)
-        fprintf(log_output, "ERROR: POISON_PTR for stack->data means that stack was destructed");
+        fprintf(logs_file, "ERROR: POISON_PTR for stack->data means that stack was destructed");
 
     else if (stack->data == (elem_t*)DEFAULT_PTR && stack->count == 0)
-        fprintf(log_output, "Data pointer is DEFAUlT_PTR "
+        fprintf(logs_file, "Data pointer is DEFAUlT_PTR "
                             "Probably stack has not been used to push elements");
 
-    else fprintf(log_output, "<%p>\n", stack->data);
+    else fprintf(logs_file, "<%p>\n", stack->data);
 
     if (stack->data != NULL
         && stack->data != (elem_t*)POISON_PTR
@@ -1191,23 +1188,23 @@ int stack_dump_(stack* stack, LOG_PARAMS) {
                             stack->capacity - stack->count + 1,
                             stack->size_of_elem)) {
 
-        fprintf(log_output, "Elements of the stack: \n\n");
+        fprintf(logs_file, "Elements of the stack: \n\n");
 
         for (int count = 0; count < stack->count; count++) {
 
-            fprintf(log_output, "[%d]" ELEM_SPEC "\n", count, stack->data[count - 1]);
+            fprintf(logs_file, "[%d]" ELEM_SPEC "\n", count, stack->data[count - 1]);
         }
 
         //if ((TYPE_NAME == "int" || TYPE_NAME == "integer"))
         //    for (int count = 0; count < stack->count; count++) {
 
-        //        fprintf(log_output, "[%d] %5d\n", count, stack->data[count]);
+        //        fprintf(logs_file, "[%d] %5d\n", count, stack->data[count]);
         //    }
 
         //if ((TYPE_NAME == "double" || TYPE_NAME == "float") && stack->count != 0)
         //    for (int count = 0; count < stack->count; count++) {
 
-        //        //fprintf(log_output, "[%d] %5g\n", count, stack->data[count]);
+        //        //fprintf(logs_file, "[%d] %5g\n", count, stack->data[count]);
         //    }
     }
 
@@ -1218,14 +1215,16 @@ int stack_dump_(stack* stack, LOG_PARAMS) {
                             stack->capacity - stack->count + 1, 
                             stack->size_of_elem))
 
-        fprintf(log_output, "ERROR: Stack free data is not empty\n");
+        fprintf(logs_file, "ERROR: Stack free data is not empty\n");
 
     if (stack->count == 0 && stack->capacity == 0)
-        fprintf(log_output, "Stack is empty\n");
+        fprintf(logs_file, "Stack is empty\n");
 
     stack_error_process(stack);
 
     stack_free_data(stack);
+
+    fflush(logs_file);
 
     assert(0 && "CRITICAL ERROR: Stack dump has been called");
     return 0;

@@ -44,7 +44,7 @@ int text_remove_comments_(struct Text* text, LOG_PARAMS) {
 
 #undef DEF_CMD_
 
-#define DEF_CMD_(num, name, op_code, hash)									\
+#define DEF_CMD_(num, name, op_code, hash, instructions)									\
 																			\
 	if (oper_hash == hash) {				    							\
 		                                                                    \
@@ -73,7 +73,7 @@ int text_remove_comments_(struct Text* text, LOG_PARAMS) {
 
 //===========================================================================
 
-#define DEF_JMP_(num, name, op_code, hash)		        					\
+#define DEF_JMP_(num, name, op_code, hash, instructions)		        					\
 																			\
 	if (oper_hash == hash) {												\
 																			\
@@ -322,7 +322,7 @@ int clear_opernamebuf_(LOG_PARAMS) {
 
 //===================================================================
 
-#define DEF_JMP_(num, name, code, hash)		         				\
+#define DEF_JMP_(num, name, code, hash, instructions)		         				\
 																	\
 	case hash: {													\
 																	\
@@ -597,7 +597,7 @@ int _asmstruct_allocate_memory(long number, AsmStruct* asmstruct,
 //===================================================================
 
 FILE* open_code_file_(const char* filename, const char* mode, 
-								       LOG_PARAMS) {
+								       			  LOG_PARAMS) {
 
 	asm_log_report();
 
@@ -641,7 +641,7 @@ int close_code_file_(FILE* fp, LOG_PARAMS) {
 	int fclose_return_value = fclose(fp);
 
 	if (fclose_return_value == EOF)
-		set_and_process_err(FCLOSE_ERROR);
+		set_and_process_err(FCLOSE_ERR);
 
 	return 0;
 }
@@ -716,14 +716,14 @@ int close_listing_file_(LOG_PARAMS) {
 	int fclose_ret = fclose(asm_listing_file);
 
 	if (fclose_ret == EOF)
-		set_and_process_err(FCLOSE_ERROR);
+		set_and_process_err(FCLOSE_ERR);
 
 	return 0;
 }	
 
 //===================================================================
 
-#define DEF_CMD_(num, name, code, hash) \
+#define DEF_CMD_(num, name, code, hash, instructions) \
 	case CMD_##name: ;
 
 void check_unique_(LOG_PARAMS) {
@@ -806,7 +806,7 @@ int write_listing(const char* string, int length,
 	fprintf(asm_listing_file, "Current position: %x. ", 
 							   asmstruct->string_start_ips[str_number]);
 
-	fprintf(asm_listing_file,"Input string : %*s. Written bytes: ", 
+	fprintf(asm_listing_file,"Input string : %*s Written bytes: ", 
 												   length, string);
 
 	for (int ct = 0; ct < number; ct++) {

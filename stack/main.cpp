@@ -10,6 +10,8 @@ int main(int argc, char* argv[]) {
 
     int err = 0;
 
+    FILE* logs_file = open_log_file(argv[1]);
+
     stack Stack = { 0 };
 
     stack_ctor(&Stack);
@@ -20,4 +22,5 @@ int main(int argc, char* argv[]) {
 
     stack_dtor(&Stack);
 
+    close_log_file(logs_file);
 }

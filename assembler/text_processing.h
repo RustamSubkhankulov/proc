@@ -2,6 +2,15 @@
 
 #include <stdio.h>
 
+#include "../stack/errors_and_logs.h"
+
+//===================================================================
+
+#define text_init_(filename, text) \
+		text_init(filename, text, LOG_ARGS);
+
+//===================================================================
+
 /// Structure contains string as char* and its length
 struct String {
 	char* data;
@@ -24,7 +33,7 @@ struct Text {
 /// Clears allocated memoru after strings initialization
 /// @param filename - name of the file
 /// @param struct Text* text pointer to structure Text
-char* text_init(const char* filename, struct Text* text);
+char* text_init(const char* filename, struct Text* text, LOG_PARAMS);
 
 /// Reads size of the file
 ///
@@ -50,7 +59,7 @@ void strings_init(char* buf, struct Text* text);
 /// @param const char* filename name of the file that will be copied to char* buf
 /// @param struct Text* text pointer to the Text structure
 /// @returns char* pointer to the buffer
-char* file_to_buf_copy(const char* filename, struct Text* text);
+char* file_to_buf_copy(const char* filename, struct Text* text, LOG_PARAMS);
 
 /// Checks if there any letters in string
 /// 
@@ -78,7 +87,7 @@ char* string_skip_blank(char* string);
 ///@warning requires free function to clear buffer
 ///@param long size size of file if bytes
 ///@param FILE* fp pointer to the file
-char* copy_data_to_buf(long size, FILE* fp);
+char* copy_data_to_buf(long size, FILE* fp, LOG_PARAMS);
 
 /// Prints strings
 /// 
