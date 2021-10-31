@@ -1,14 +1,16 @@
-DEF_JMP_(1, JMP,  13, 780006197, 
+DEF_JMP_(1, JMP,  15, 780006197, 
 {
     int dest_ip = 0;
     get_destination_ip(dest_ip);
 
     move_ip_to_dest(dest_ip);
 
+    //printf("\n\n jumped to %x\n\n", dest_ip);
+
     procstruct->command_ct++;
 })
 
-DEF_JMP_(1, JA,   14, 3413231484, 
+DEF_JMP_(1, JA,   10, 3413231484, 
 {
      int dest_ip = 0;
     get_destination_ip(dest_ip);
@@ -19,9 +21,12 @@ DEF_JMP_(1, JA,   14, 3413231484,
     elem_t second_val = 0;
     get_argument_from_stack(second_val);
 
-    if (first_val > second_val)
-        move_ip_to_dest(dest_ip)
+    //printf("\n\n %f > %f \n\n", first_val, second_val);
 
+    if (first_val > second_val) {
+        move_ip_to_dest(dest_ip)
+        //printf("\n\n jumped to %x\n\n", dest_ip);
+        }
     else {
         procstruct->ip += sizeof(int);
         procstruct_ip_check(procstruct);
@@ -30,7 +35,7 @@ DEF_JMP_(1, JA,   14, 3413231484,
     procstruct->command_ct++;   
 })
 
-DEF_JMP_(1, JAE,  15, 469140019, 
+DEF_JMP_(1, JAE,  16, 469140019, 
 {
      int dest_ip = 0;
     get_destination_ip(dest_ip);
@@ -41,9 +46,12 @@ DEF_JMP_(1, JAE,  15, 469140019,
     elem_t second_val = 0;
     get_argument_from_stack(second_val);
 
-    if (first_val >= second_val)
-        move_ip_to_dest(dest_ip)
+    //printf("\n\n %f >= %f\n\n", first_val, second_val);
 
+    if (first_val >= second_val) {
+        move_ip_to_dest(dest_ip)
+        //printf("\n\n jumped to %x\n\n", dest_ip);
+        }
     else {
         procstruct->ip += sizeof(int);
         procstruct_ip_check(procstruct);
@@ -52,7 +60,7 @@ DEF_JMP_(1, JAE,  15, 469140019,
     procstruct->command_ct++; 
 })
 
-DEF_JMP_(1, JB,   16, 315656441, 
+DEF_JMP_(1, JB,   11, 315656441, 
 {
      int dest_ip = 0;
     get_destination_ip(dest_ip);
@@ -63,9 +71,12 @@ DEF_JMP_(1, JB,   16, 315656441,
     elem_t second_val = 0;
     get_argument_from_stack(second_val);
 
-    if (first_val < second_val)
-        move_ip_to_dest(dest_ip)
+    //printf("\n\n %f < %f\n\n", first_val, second_val);
 
+    if (first_val < second_val) {
+        move_ip_to_dest(dest_ip)
+        //printf("\n\n jumped to %x\n\n", dest_ip);
+        }
     else {
         procstruct->ip += sizeof(int);
         procstruct_ip_check(procstruct);
@@ -85,9 +96,12 @@ DEF_JMP_(1, JBE,  17, 3172396438,
     elem_t second_val = 0;
     get_argument_from_stack(second_val);
 
-    if (first_val <= second_val)
-        move_ip_to_dest(dest_ip)
+    //printf("\n\n %f <= %f\n\n", first_val, second_val);
 
+    if (first_val <= second_val) {
+        move_ip_to_dest(dest_ip)
+        //printf("\n\njumped to %x\n\n", dest_ip);
+        }
     else {
         procstruct->ip += sizeof(int);
         procstruct_ip_check(procstruct);
@@ -107,9 +121,12 @@ DEF_JMP_(1, JE,   18, 1310313540,
     elem_t second_val = 0;
     get_argument_from_stack(second_val);
 
-    if (fabs(first_val - second_val) < PRECISION)
-        move_ip_to_dest(dest_ip)
+    //printf("\n\n is equal %f %f\n\n", first_val, second_val);
 
+    if (fabs(first_val - second_val) < PRECISION) {
+        move_ip_to_dest(dest_ip)
+        //printf("\n\njumped to %x\n\n", dest_ip);
+        }
     else {
         procstruct->ip += sizeof(int);
         procstruct_ip_check(procstruct);
@@ -129,9 +146,12 @@ DEF_JMP_(1, JNE,  19, 367029121,
     elem_t second_val = 0;
     get_argument_from_stack(second_val);
 
-    if (fabs(first_val - second_val) > PRECISION)
-        move_ip_to_dest(dest_ip)
+    //printf("\n\n is not equal %f %f\n\n", first_val, second_val);
 
+    if (fabs(first_val - second_val) > PRECISION){
+        move_ip_to_dest(dest_ip)
+        //printf("\n\njumped to %x\n\n", dest_ip);
+        }
     else {
         procstruct->ip += sizeof(int);
         procstruct_ip_check(procstruct);
@@ -154,6 +174,8 @@ DEF_JMP_(1, CALL, 20, 1316946032,
     push_argument_to_stack(return_ip);
 
     move_ip_to_dest(dest_ip);
+
+    //printf("\n\n dest_ip %x return_ip %x\n\n", dest_ip, return_ip);
 
     procstruct->command_ct;
 })
