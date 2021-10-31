@@ -5,7 +5,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "stackconfig.h"
 #include "errors_and_logs.h"
 #include "../stack/errors.h"
 #include "../assembler/processor_general.h"
@@ -116,13 +115,9 @@ int log_report_parameters_check(LOG_PARAMS) {
     if (line <= 0 
     || logs_file == NULL
     || file_name == NULL 
-    || func_name == NULL) {
-
-        set_global_error_code(LOG_REPORT_PARAMS_ERR);
-        global_error_process();
-
-        return 0;
-    }
+    || func_name == NULL) 
+    
+        set_and_process_err(LOG_REPORT_PARAMS_ERR);
 
     return 1;
 }
@@ -135,15 +130,11 @@ int log_report_(LOG_PARAMS, const char* mother_func) {
         return -1;
 
     int value = fprintf(logs_file, "Funtion: %s\n Called from: function: %s, file: %s."
-                                  " Current line: %d.\n\n", mother_func, LOGS_ARGS_USE);
+                                      " Current line: %d.\n\n", mother_func, func_name, 
+                                                                      file_name, line);
 
-    if (value < 0) {
-
-        set_global_error_code(FILE_OUTPUT_ERROR);
-        global_error_process();
-
-        return -1;
-    }
+    if (value < 0) 
+        set_and_process_err(FILE_OUTPUT_ERROR);
 
     return 0;
 }
@@ -156,15 +147,10 @@ int smpl_log_report_(LOG_PARAMS) {
         return -1;
 
     int value = fprintf(logs_file, "Function: %s, file: %s, line: %d \n \n",
-                                                  LOGS_ARGS_USE);
+                                                func_name, file_name, line);
 
-    if (value < 0) {
-
-        set_global_error_code(FILE_OUTPUT_ERROR);
-        global_error_process();
-
-        return -1;
-    }
+    if (value < 0) 
+        set_and_process_err(FILE_OUTPUT_ERROR);
 
     return 0;
 }
@@ -176,22 +162,22 @@ int global_error_report(LOG_PARAMS) {
     extern FILE* log_output;
     extern int global_error_code;
 
+    fprintf(stderr, "\n Oops, something went wrong." 
+                    " Go see logs to find out. \n");
     
-    fprintf(logs_file, "Global_error-code is %d\n", global_error_code);
+    fprintf(logs_file, "Global_error-code is %d\n", 
+                                global_error_code);
 
-    int value = fprintf(logs_file, "An error occured.\n File: %s, function: %s, line %d.""\n",
-                                                                    file_name,
-                                                                    func_name,
-                                                                        line);
-    value += fprintf(logs_file, "%s\n\n", get_error_descr(global_error_code));
+    int value = fprintf(logs_file, "An error occured.\n File: %s, function: "
+                                                "%s, line %d.""\n",file_name,
+                                                                   func_name,
+                                                                       line);
 
-    if (value < 0) {
-            
-        set_global_error_code(FILE_OUTPUT_ERROR);
-        global_error_process();
+    value += fprintf(logs_file, "%s\n\n", 
+                     get_error_descr(global_error_code));
 
-        return -1;
-    }
+    if (value < 0) 
+        set_and_process_err(FILE_OUTPUT_ERROR);
 
     global_error_code = 0;
     return 0;
@@ -205,18 +191,15 @@ int stack_error_report(LOG_PARAMS, stack* stack) {
 
     fprintf(logs_file, "Stack error code is %d\n", stack->error_code);
     
-    int value = fprintf(logs_file, "An error occured during work with stack.\n File: %s,"
-                        " function: %s, line %d.""\n",  file_name, func_name, line);
+    int value = fprintf(logs_file, "An error occured during work with stack.\n"
+                                        " File: %s, function: %s, line %d.""\n",  
+                                                    file_name, func_name, line);
 
-    value += fprintf(logs_file, "%s\n\n", get_error_descr(stack->error_code));
+    value += fprintf(logs_file, "%s\n\n", 
+                     get_error_descr(stack->error_code));
 
-    if (value < 0) {
-
-        set_global_error_code(FILE_OUTPUT_ERROR);
-        global_error_process();
-
-        return -1;
-    }
+    if (value < 0) 
+        set_and_process_err(FILE_OUTPUT_ERROR);
 
     return 0;
 }
@@ -238,7 +221,7 @@ const char* get_error_descr(int error_code) {
 
     switch (error_code) {
 
-    #include "../stack/errors.h"
+    #include "../text_files/errors.txt"
     
     default:
         return NULL;

@@ -40,7 +40,9 @@ int _disasm_header_check(disasmstruct* disasmstruct, LOG_PARAMS) {
 
     disasmstruct_ptr_check(disasmstruct);
 
-    memcpy(&disasmstruct->header, disasmstruct->code_array, sizeof(struct Header));
+    memcpy(&disasmstruct->header, 
+            disasmstruct->code_array, 
+            sizeof(struct Header));
 
     if (disasmstruct->header.signature != SIGN)
         set_and_process_err(HDR_INV_SIGN);
@@ -49,13 +51,7 @@ int _disasm_header_check(disasmstruct* disasmstruct, LOG_PARAMS) {
         set_and_process_err(HDR_INV_VERSION);
 
     if (disasmstruct->header.file_size != disasmstruct->code_file_size)
-        set_and_process_err(HDR_INV_FILE_SIZE);
-
-    if (disasmstruct->header.elem_t_args_number
-      + disasmstruct->header.register_args_number
-      > disasmstruct->header.commands_number)
-
-        set_and_process_err(HDR_INV_CMD_NUMBERS);
+        set_and_process_err(HDR_INV_FILE_SIZE);;
 
     return 0;
 }
@@ -63,75 +59,46 @@ int _disasm_header_check(disasmstruct* disasmstruct, LOG_PARAMS) {
 //===================================================================
 
 int _disassemble_code(disasmstruct* disasmstruct, FILE* disasm_output,
-                                                LOG_PARAMS) {
+                                                           LOG_PARAMS) {
 
     disasm_log_report();
     disasmstruct_ptr_check(disasmstruct);
     file_ptr_check(disasm_output);
 
-    for (int cmnd_ct = 0;
-             cmnd_ct < disasmstruct->header.commands_number;
-             cmnd_ct++) {
+    while(disasmstruct->ip - disasmstruct->code_array
+                           < disasmstruct->code_file_size) {
 
-            int ret_val = disassemble_command(disasmstruct, disasm_output);
+            int ret_val = disassemble_command(disasmstruct, 
+                                             disasm_output);
             if (ret_val == -1)
                 return -1;
         }
-
-    int disasm_final_check_val = disasm_final_check(disasmstruct);
-    if (disasm_final_check_val == -1)
-        return -1;
 
     return 0;
 }
 
 //===================================================================
 
-#define fprintf_register_arguments(num)                             \
+#define DEF_JMP_(num, name, code, hash, instructions)               \
                                                                     \
-{                                                                   \
+case code: {                                                        \
                                                                     \
-    for (int ct = 0; ct < num; ct++) {                              \
+    int err = fprintf(disasm_output, "%s ", #name);                 \
+    if (err < 0)                                                    \
+        set_and_process_err(FWRITE_ERR);                            \
                                                                     \
-        err = fprintf(disasm_output, "%cx ",                        \
-               *disasmstruct->ip + ASCII_OFFSET);                   \
+    disasmstruct->ip++;                                             \
+    disasmstruct_ip_check(disasmstruct);                            \
                                                                     \
-        if (err < 0)                                                \
-            set_and_process_err(FWRITE_ERR);                        \
+    fprintf_int_argument;                                           \
+    fprintf(disasm_output, "\n");                                   \
                                                                     \
-        disasmstruct->register_args_ct++;                           \
-                                                                    \
-        disasmstruct->ip++;                                         \
-        disasmstruct_ptr_check(disasmstruct);                       \
-    }                                                               \
     break;                                                          \
 }
 
 //===================================================================
 
-#define fprintf_elem_t_arguments(num)                               \
-                                                                    \
-{                                                                   \
-                                                                    \
-    for (int ct = 0; ct < num; ct++) {                              \
-                                                                    \
-        err = fprintf(disasm_output, ELEM_SPEC " ",                 \
-                        *(elem_t*)disasmstruct->ip);                \
-                                                                    \
-        if (err < 0)                                                \
-            set_and_process_err(FWRITE_ERR);                        \
-                                                                    \
-        disasmstruct->elem_t_args_ct++;                             \
-                                                                    \
-        disasmstruct->ip += sizeof(elem_t);                         \
-        disasmstruct_ptr_check(disasmstruct);                       \
-    }                                                               \
-    break;                                                          \
-}
-
-//===================================================================
-
-#define DEF_CMD_(num, name, code)                                   \
+#define DEF_CMD_(num, name, code, hash, instructions)               \
                                                                     \
 case code: {                                                        \
                                                                     \
@@ -144,26 +111,44 @@ case code: {                                                        \
                                                                     \
     if (num != 0) {                                                 \
                                                                     \
-        switch(oper_code & ~OPER_CODE_MASK) {                       \
+        char is_ram_using = 0;                                      \
                                                                     \
-            case REGISTER_MASK:                                     \
-                fprintf_register_arguments(num)                     \
+        if ((oper_code & ~RAM_MASK) == RAM_MASK) {                  \
                                                                     \
-            case IMM_MASK:                                          \
-                fprintf_elem_t_arguments(num)                       \
-                                                                    \
+            fprintf(disasm_output, "[");                            \
+            is_ram_using = 1;                                       \
         }                                                           \
-    }                                                               \
-    fprintf(disasm_output, "\n");                                   \
                                                                     \
-    disasmstruct->commands_ct++;                                    \
+        for (int ct = 0; ct < num; ct++) {                          \
+                                                                    \
+            switch(oper_code & ~OPER_CODE_MASK ) {                  \
+                                                                    \
+                case IMM_MASK:                                      \
+                    fprintf_elem_t_argument;                        \
+                    break;                                          \
+                                                                    \
+                case REGISTER_MASK :                                \
+                    fprintf_register_argument;                      \
+                    break;                                          \
+                                                                    \
+                case REGISTER_MASK | IMM_MASK :                     \
+                    fprintf_var_arguments;                          \
+                    break;                                          \
+            }                                                       \
+        }                                                           \
+                                                                    \
+        if (is_ram_using)                                           \
+            fprintf(disasm_output, "]");                            \
+    }                                                               \
+                                                                    \
+    fprintf(disasm_output, "\n");                                   \
     break;                                                          \
 }                                                                
 
 //===================================================================
 
 int _disassemble_command(disasmstruct* disasmstruct, FILE* disasm_output, 
-                                                   LOG_PARAMS) {
+                                                              LOG_PARAMS) {
 
     disasm_log_report();
 
@@ -175,39 +160,14 @@ int _disassemble_command(disasmstruct* disasmstruct, FILE* disasm_output,
     switch(oper_code & OPER_CODE_MASK) {
 
         #include "../text_files/commands.txt"
+        #include "../text_files/jumps.txt"
 
         default: 
             set_and_process_err(DISASM_INV_OPER_CODE);
     }
 
     #undef DEF_CMD_
-
-    return 0;
-}
-
-//==================================================================
-
-int _disasm_final_check(disasmstruct* disasmstruct, LOG_PARAMS) {
-
-    disasm_log_report();
-
-    disasmstruct_ptr_check(disasmstruct);
-    disasmstruct_ip_check(disasmstruct);
-
-    if (disasmstruct->commands_ct !=
-        disasmstruct->header.commands_number)
-
-        set_and_process_err(INV_COMMANDS_NUMBER);
-
-    if (disasmstruct->elem_t_args_ct !=
-        disasmstruct->header.elem_t_args_number)
-
-        set_and_process_err(INV_ARGUMENTS_NUMBER);
-
-    if (disasmstruct->register_args_ct !=
-        disasmstruct->header.register_args_number)
-
-        set_and_process_err(INV_REGISTER_ARGS_NUMBER);
+    #undef DEF_JMP_
 
     return 0;
 }
@@ -256,7 +216,7 @@ int _close_disasm_listing_file(LOG_PARAMS) {
     int fclose_ret = fclose(disasm_listing_file);
 
     if (fclose_ret == EOF)
-        set_and_process_err(FCLOSE_ERROR);
+        set_and_process_err(FCLOSE_ERR);
 
     return 0;
 }
@@ -264,7 +224,7 @@ int _close_disasm_listing_file(LOG_PARAMS) {
 //===================================================================
 
 FILE* _open_file(const char* filename, const char* mode, int* err,  
-                                            LOG_PARAMS) {
+                                                       LOG_PARAMS) {
 
     disasm_log_report();
 
@@ -307,7 +267,7 @@ int _close_file(FILE* fp, LOG_PARAMS) {
 
         int fclose_ret = fclose(fp);
         if (fclose_ret == EOF) 
-            set_and_process_err(FCLOSE_ERROR);
+            set_and_process_err(FCLOSE_ERR);
     }
 
     return 0;

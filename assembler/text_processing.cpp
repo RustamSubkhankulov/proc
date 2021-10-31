@@ -7,16 +7,74 @@
 #include <assert.h>
 #include <errno.h>
 
-#include "../stack/stackconfig.h"
 #include "text_processing.h"
 #include "../stack/errors_and_logs.h"
 
 //#define PRINTNUMBEROFLINE
 
 //=============================================================================
-char* text_init(const char* filename, struct Text* text, LOG_PARAMS) {
 
-	extern FILE* log_file;
+static int my_swap(void* first_, void* second_, size_t size) {
+
+	assert(first_  != NULL);
+	assert(second_ != NULL);
+
+	char* first_ptr  = (char*)first_;
+	char* second_ptr = (char*)second_;
+
+	while (size >= sizeof(int64_t)) {
+
+		int64_t temp = *(int64_t*)first_ptr;
+		*(int64_t*)first_ptr  = *(int64_t*)second_ptr;
+		*(int64_t*)second_ptr = temp;
+
+		first_ptr += sizeof(int64_t);
+		second_ptr += sizeof(int64_t);
+
+		size -= sizeof(int64_t);
+	}
+
+	while (size >= sizeof(int32_t)) {
+
+		int32_t temp = *(int32_t*)first_ptr;
+		*(int32_t*)first_ptr = *(int32_t*)second_ptr;
+		*(int32_t*)second_ptr = temp;
+
+		first_ptr += sizeof(int32_t);
+		second_ptr += sizeof(int32_t);
+
+		size -= sizeof(int32_t);
+	}
+
+	while (size >= sizeof(int16_t)) {
+
+		int16_t temp = *(int16_t*)first_ptr;
+		*(int16_t*)first_ptr  = *(int16_t*)second_ptr;
+		*(int16_t*)second_ptr = temp;
+
+		first_ptr += sizeof(int16_t);
+		second_ptr += sizeof(int16_t);
+
+		size -= sizeof(int16_t);
+	}
+
+	while (size >= sizeof(int8_t)) {
+
+		int8_t temp = *(int8_t*)first_ptr;
+		*(int8_t*)first_ptr  = *(int8_t*)second_ptr;
+		*(int8_t*)second_ptr = temp;
+
+		first_ptr += sizeof(int8_t);
+		second_ptr += sizeof(int8_t);
+
+		size -= sizeof(int8_t);
+	}
+
+	return 0;
+}
+
+//=============================================================================
+char* text_init(const char* filename, struct Text* text, LOG_PARAMS) {
 
 	//filename = "hamlet.txt";
 
@@ -32,9 +90,10 @@ char* text_init(const char* filename, struct Text* text, LOG_PARAMS) {
 	strings_init(buf, text);
 
 	#ifdef LOGS
-		fprintf(log_file, "Number of strings read is %ld\n Size of the file: %ld.\n",
-																text->strings_number,
-																text->size);
+		fprintf(log_file, "Number of strings read is"
+					" %ld\n Size of the file: %ld.\n",
+								 text->strings_number,
+		     							  text->size);
 	#endif
 
 	return buf;
@@ -50,7 +109,7 @@ char* file_to_buf_copy(const char* filename, struct Text* text, LOG_PARAMS) {
 	if (fp == NULL) 
 		return NULL;
 	
-	text->size = file_size(fp);
+	text->size = file_size_(fp);
 	if (text->size < -1)
 		return NULL;
 
@@ -68,9 +127,9 @@ char* file_to_buf_copy(const char* filename, struct Text* text, LOG_PARAMS) {
 }
 
 //=============================================================================
-long file_size(FILE* fp) {
+long file_size(FILE* fp, LOG_PARAMS) {
 
-	smpl_log_report();
+	text_smpl_log_report();
 
 	assert(fp != NULL);
 
@@ -90,7 +149,7 @@ long file_size(FILE* fp) {
 //============================================================================
 char* copy_data_to_buf(long size, FILE* fp, LOG_PARAMS) {
 
-	smpl_log_report();
+	text_smpl_log_report();
 
 	assert(fp != NULL);
 

@@ -14,6 +14,9 @@
 #define is_memory_clear(base, num, size) \
        _is_memory_clear(base, num, size, LOG_ARGS)
 
+#define get_hash(base, len) \
+        get_hash_(base, len, LOG_ARGS)
+
 //===================================================================
 
 void* _my_recalloc(void* ptr, int number, int prev_number, int size_of_elem,
@@ -23,6 +26,6 @@ int _clear_memory(void* base, int num, int size, LOG_PARAMS);
 
 int _is_memory_clear(void* base, int num, int size, LOG_PARAMS);
 
-void hack_pentagon(void);
+void ___System_Sleep(float _Duration);
 
-void ___System_Sleep(int _Duration);
+int64_t get_hash_(char* base, unsigned int len, LOG_PARAMS);

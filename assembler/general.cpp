@@ -8,7 +8,7 @@
 
 int _clear_memory(void* base, int num, int size, LOG_PARAMS) {
 
-    log_report();
+    asm_log_report();
 
     if (base == NULL || num < 1 || size < 1) {
 
@@ -27,7 +27,7 @@ int _clear_memory(void* base, int num, int size, LOG_PARAMS) {
 
 int _is_memory_clear(void* base, int num, int size, LOG_PARAMS) {
 
-    log_report();
+    asm_log_report();
 
     if (base == NULL || num < 1 || size < 1) {
 
@@ -52,7 +52,7 @@ int _is_memory_clear(void* base, int num, int size, LOG_PARAMS) {
 
 void* _my_recalloc(void* ptr, int number, int prev_number, int size_of_elem,
                                                     LOG_PARAMS) {
-    log_report();
+    asm_log_report();
 
     if (ptr == NULL) {
 
@@ -88,31 +88,61 @@ void* _my_recalloc(void* ptr, int number, int prev_number, int size_of_elem,
 
 //===================================================================
 
-void ___System_Sleep(int _Duration) {
+void ___System_Sleep(float _Duration) {
 
     int64_t start = clock();
-    while ((clock() - start) < 1000000 * _Duration);
+    while ((clock() - start) < int64_t(1000000 * _Duration));
 }
 
 //===================================================================
 
-void hack_pentagon(void) {
+int64_t get_hash_(char* base, unsigned int len, LOG_PARAMS) {
 
-    for (int ct = 1; ct <= 10; ct++) {
+    stack_log_report();
 
-        printf("\n Hacking Pentagon... Progress: ");
-        printf("%d%%  *", ct * 10);
-        
-        int i = 1;
-        for (; i <= ct * 10; i ++)
-            printf("%c", '-');
+    assert(base);
 
-        while (i++ <= 100)
-            printf(" ");
-        
-        printf("*");
+    const unsigned int m = 0x5bd1e995;
+    const unsigned int seed = 0;
+    const int r = 24;
 
-        ___System_Sleep(5);
+    unsigned int h = seed ^ len;
+
+    const unsigned char* data = (const unsigned char*)base;
+    unsigned int k = 0;
+
+    while (len >= 4) {
+
+        k = data[0];
+        k |= data[1] << 8;
+        k |= data[2] << 16;
+        k |= data[3] << 24;
+
+        k *= m;
+        k ^= k >> r;
+        k *= m;
+
+        h *= m;
+        h ^= k;
+
+        data += 4;
+        len -= 4;
+
     }
-    printf("\nPentagon successfully hacked!\n");
+
+    switch (len) {
+        case 3:
+            h ^= data[2] << 16;
+        case 2:
+            h ^= data[1] << 8;
+        case 1:
+            h ^= data[0];
+            h *= m;
+    }
+
+    h ^= h >> 13;
+    h *= m;
+    h ^= h >> 15;
+
+    return h;
 }

@@ -12,7 +12,9 @@ struct ProcStruct {
 
     elem_t regist[REGISTER_SIZE];
 
-    char ram[RAM_SIZE];
+    elem_t* ram;
+
+    elem_t* video;
 
     struct Header header;
 
@@ -248,70 +250,6 @@ typedef struct ProcStruct procstruct;
 
 //===================================================================
 
-// #define PROC_ADD(procstruct, oper_code) \
-//        _PROC_ADD(procstruct, LOG_ARGS)
-
-// #define PROC_SUB(procstruct, oper_code) \
-//        _PROC_SUB(procstruct, LOG_ARGS)
-
-// #define PROC_MUL(procstruct, oper_code) \
-//        _PROC_MUL(procstruct, LOG_ARGS)
-
-// #define PROC_DIV(procstruct, oper_code) \
-//        _PROC_DIV(procstruct, LOG_ARGS)
-
-// #define PROC_PUSH(procstruct, oper_code) \
-//        _PROC_PUSH(procstruct, oper_code,  LOG_ARGS)
-
-// #define PROC_OUT(procstruct, oper_code) \
-//        _PROC_OUT(procstruct, LOG_ARGS)
-
-// #define PROC_POP(procstruct, oper_code) \
-//        _PROC_POP(procstruct, oper_code, LOG_ARGS)
-
-// #define PROC_IN(procstruct, oper_code) \
-//        _PROC_IN(procstruct, LOG_ARGS)
-
-// #define PROC_HLT(procstruct, oper_code) \
-//        _PROC_HLT(procstruct, LOG_ARGS)
-
-// #define PROC_DUMP(procstruct, oper_code) \
-//        _PROC_DUMP(procstruct, LOG_ARGS)
-
-// #define PROC_RET(procstruct, oper_code) \
-//        _PROC_RET(procstruct, LOG_ARGS)
-
-//===================================================================
-
-// #define PROC_JMP(procstruct) \
-//        _PROC_JMP(procstruct, LOG_ARGS)
-
-// #define PROC_JA(procstruct) \
-//        _PROC_JA(procstruct, LOG_ARGS)
-
-// #define PROC_JAE(procstruct) \
-//        _PROC_JAE(procstruct, LOG_ARGS)
-
-// #define PROC_JB(procstruct) \
-//        _PROC_JB(procstruct, LOG_ARGS)
-
-// #define PROC_JBE(procstruct) \
-//        _PROC_JBE(procstruct, LOG_ARGS)
-
-// #define PROC_JE(procstruct) \
-//        _PROC_JE(procstruct, LOG_ARGS)
-
-// #define PROC_JNE(procstruct) \
-//        _PROC_JNE(procstruct, LOG_ARGS)
-
-// #define PROC_JF(procstruct) \
-//        _PROC_JF(procstruct, LOG_ARGS)
-
-// #define PROC_CALL(procstruct) \
-//        _PROC_CALL(procstruct, LOG_ARGS)
-
-//===================================================================
-
 #define open_proc_output(filename) \
        _open_proc_output(filename, LOG_ARGS)
 
@@ -326,11 +264,14 @@ typedef struct ProcStruct procstruct;
 
 //===================================================================
 
-// #define proc_dump(procstruct) \
-//        _PROC_DUMP(procstruct, LOG_ARGS)
-
 #define proc_final_check(procstruct) \
        _proc_final_check(procstruct, LOG_ARGS)
+
+#define procstruct_allocate_memory(procstruct) \
+       _procstruct_allocate_memory(procstruct, LOG_ARGS)
+
+#define procstruct_free_memory(procstruct) \
+       _procstruct_free_memory(procstruct, LOG_ARGS)
 
 //===================================================================
 
@@ -348,6 +289,10 @@ int _proc_execute_command(procstruct* procstruct, LOG_PARAMS);
 
 int _init_procstruct(procstruct* procstruct, FILE* fp, LOG_PARAMS);
 
+int _procstruct_allocate_memory(procstruct* procstruct);
+
+int _procstruct_free_memory(procstruct* procsturct);
+
 int _dtor_procstruct(procstruct* procstruct, LOG_PARAMS);
 
 //===================================================================
@@ -355,56 +300,6 @@ int _dtor_procstruct(procstruct* procstruct, LOG_PARAMS);
 const unsigned char* _read_from_file(FILE* fp, long* size, LOG_PARAMS);
 
 int _header_check(procstruct* procstruct, LOG_PARAMS);
-
-//===================================================================
-
-// int _PROC_PUSH(procstruct* procstruct, unsigned char oper_code, LOG_PARAMS);
-
-// int _PROC_POP (procstruct* procstruct, unsigned char oper_code, LOG_PARAMS);
-
-// int _PROC_ADD (procstruct* procstruct, LOG_PARAMS);
-
-// int _PROC_SUB (procstruct* procstruct, LOG_PARAMS);
-
-// int _PROC_MUL (procstruct* procstruct, LOG_PARAMS);
-
-// int _PROC_DIV (procstruct* procstruct, LOG_PARAMS);
-
-// int _PROC_OUT (procstruct* procstruct, LOG_PARAMS);
-
-// int _PROC_IN  (procstruct* procstruct, LOG_PARAMS);
-
-// int _PROC_HLT (procstruct* procstruct, LOG_PARAMS);
-
-// int _PROC_DUMP(procstruct* procstruct, LOG_PARAMS);
-
-// int _PROC_RET(procstruct* procstruct, LOG_PARAMS);
-
-//===================================================================
-
-// #define DEF_JMP_(num, name, code, hash)                               \
-//                                                                       \
-// int _PROC_##name(procstruct* procstruct, LOG_PARAMS); 
-
-// #include "../text_files/jumps.txt"
-
-// #undef DEF_JMP_
-
-// int _PROC_JMP(procstruct* procstruct, LOG_PARAMS);
-
-// int _PROC_JA(procstruct* procstruct, LOG_PARAMS);
-
-// int _PROC_JAE(procstruct* procstruct, LOG_PARAMS);
-
-// int _PROC_JB(procstruct* procstruct, LOG_PARAMS);
-
-// int _PROC_JBE(procstruct* procstruct, LOG_PARAMS);
-
-// int _PROC_JE(procstruct* procstruct, LOG_PARAMS);
-
-// int _PROC_JNE(procstruct* procstruct, LOG_PARAMS);
-
-// int _PROC_JF(procstruct* procstruct, LOG_PARAMS);
 
 //===================================================================
 
@@ -416,6 +311,3 @@ int _open_proc_input(const char* filename, LOG_PARAMS);
 
 int _close_proc_input(LOG_PARAMS);
 
-// FILE* open_log_file(const char* filename);
-
-// int close_log_file(FILE* logs_file);

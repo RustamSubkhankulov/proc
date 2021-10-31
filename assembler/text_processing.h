@@ -7,7 +7,10 @@
 //===================================================================
 
 #define text_init_(filename, text) \
-		text_init(filename, text, LOG_ARGS);
+		text_init(filename, text, LOG_ARGS)
+
+#define file_size_(fp) \
+	    file_size(fp, LOG_ARGS)
 
 //===================================================================
 
@@ -39,7 +42,7 @@ char* text_init(const char* filename, struct Text* text, LOG_PARAMS);
 ///
 /// <param name="fp">pointer to the file</param>
 /// <returns>Size of file in bytes</returns
-long file_size(FILE* fp);
+long file_size(FILE* fp, LOG_PARAMS);
 
 /// Counts strings in file
 ///

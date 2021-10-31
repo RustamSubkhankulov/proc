@@ -2,16 +2,13 @@
 
 #include "../cpu/processor.h"
 #include "../assembler/processor_general.h"
+#include "../assembler/config.h"
 
 struct Disasmstruct {
 
     long code_file_size;
     const unsigned char* code_array;
     const unsigned char* ip;
-
-    int commands_ct;
-    int elem_t_args_ct;
-    int register_args_ct;
 
     struct Header header;
 };
@@ -20,19 +17,101 @@ typedef struct Disasmstruct disasmstruct;
 
 //===================================================================
 
-#define disasmstruct_ptr_check(disasmstruct) {                      \
-                                                                    \
-    if (disasmstruct == NULL)                                       \
-                                                                    \
-        set_and_process_err(INV_DISASMSTRUCT_PTR);                  \
+#define fprintf_int_argument                                          \
+    do                                                                \
+    {                                                                 \
+        err = fprintf(disasm_output, "%d",                            \
+                      *(int*)disasmstruct->ip);                       \
+                                                                      \
+        if (err < 0)                                                  \
+            set_and_process_err(FWRITE_ERR);                          \
+                                                                      \
+        disasmstruct->ip += sizeof(int);                              \
+        disasmstruct_ip_check(disasmstruct);                          \
+                                                                      \
+    } while(0);
+
+//===================================================================
+
+#define fprintf_register_argument                                     \
+do                                                                    \
+{                                                                     \
+    err = fprintf(disasm_output, "%cx",                               \
+                 *disasmstruct->ip + ASCII_OFFSET);                   \
+                                                                      \
+    if (err < 0)                                                      \
+        set_and_process_err(FWRITE_ERR);                              \
+                                                                      \
+    disasmstruct->ip++;                                               \
+    disasmstruct_ptr_check(disasmstruct);                             \
+                                                                      \
+} while(0);
+
+//===================================================================
+
+#define fprintf_elem_t_argument                                       \
+do                                                                    \
+{                                                                     \
+    err = fprintf(disasm_output, ELEM_SPEC_2 ,                        \
+                  *(elem_t*)disasmstruct->ip);                        \
+                                                                      \
+    if (err < 0)                                                      \
+        set_and_process_err(FWRITE_ERR);                              \
+                                                                      \
+    disasmstruct->ip += sizeof(elem_t);                               \
+    disasmstruct_ptr_check(disasmstruct);                             \
+                                                                      \
+} while(0);
+
+//===================================================================
+
+#define fprintf_var_arguments                                         \
+do                                                                    \
+{                                                                     \
+    err = fprintf(disasm_output, "%c ",                               \
+                 *disasmstruct->ip  + ASCII_OFFSET);                  \
+                                                                      \
+    if (err < 0)                                                      \
+        set_and_process_err(FWRITE_ERR);                              \
+                                                                      \
+    disasmstruct->ip++;                                               \
+    disasmstruct_ip_check(disasmstruct);                              \
+                                                                      \
+    elem_t value = *(elem_t*)disasmstruct->ip;                        \
+                                                                      \
+    disasmstruct->ip += sizeof(elem_t);                               \
+    disasmstruct_ip_check(disasmstruct);                              \
+                                                                      \
+    char ch = '+';                                                    \
+                                                                      \
+    if (value < 0)                                                    \
+        ch = '-';                                                     \
+                                                                      \
+    err = fprintf(disasm_output, "%c " ELEM_SPEC_2 ,                  \
+                    ch, *(elem_t*)disasmstruct->ip);                  \
+                                                                      \
+    if (err < 0)                                                      \
+        set_and_process_err(FWRITE_ERR);                              \
+                                                                      \
+} while(0);
+
+//===================================================================
+
+#define disasmstruct_ptr_check(disasmstruct) {                        \
+                                                                      \
+    if (disasmstruct == NULL)                                         \
+                                                                      \
+        set_and_process_err(INV_DISASMSTRUCT_PTR);                    \
 }
 
-#define disasmstruct_ip_check(disasmstruct) {                       \
-                                                                    \
-    if (disasmstruct->ip - disasmstruct->code_array                 \
-       > disasmstruct->code_file_size)                              \
-                                                                    \
-        set_and_process_err(INV_INSTR_PTR)                          \
+//===================================================================
+
+#define disasmstruct_ip_check(disasmstruct) {                         \
+                                                                      \
+    if (disasmstruct->ip - disasmstruct->code_array                   \
+       > disasmstruct->code_file_size)                                \
+                                                                      \
+        set_and_process_err(INV_INSTR_PTR)                            \
 }
 
 //===================================================================
@@ -42,9 +121,6 @@ typedef struct Disasmstruct disasmstruct;
 
 #define disassemble_code(disasmstruct, fp) \
        _disassemble_code(disasmstruct, fp, LOG_ARGS) 
-
-#define disasm_final_check(disasmstruct) \
-       _disasm_final_check(disasmstruct, LOG_ARGS) 
 
 #define dtor_disasmstruct(disasmstruct) \
        _dtor_disasmstruct(disasmstruct, LOG_ARGS) 
@@ -68,27 +144,26 @@ typedef struct Disasmstruct disasmstruct;
 
 #define close_disasm_listing_file() \
        _close_disasm_listing_file(LOG_ARGS) 
+
 //===================================================================
 
 int _init_disasmstruct(disasmstruct* disasmstruct, FILE* fp,
-                                      LOG_PARAMS);
+                                                LOG_PARAMS);
 
 int _disasm_header_check(disasmstruct* disasmstruct, LOG_PARAMS);
 
 int _disassemble_command(disasmstruct* disasmstruct, FILE* disasm_output,
-                                                   LOG_PARAMS);
+                                                             LOG_PARAMS);
 
 int _disassemble_code(disasmstruct* disasmstruct, FILE* disasm_output,
-                                                LOG_PARAMS);
-
-int _disasm_final_check(disasmstruct* disasmstruct, LOG_PARAMS);
+                                                          LOG_PARAMS);
 
 int _dtor_disasmstruct(disasmstruct* disasmstruct, LOG_PARAMS);
 
 //===================================================================
 
 FILE* _open_file(const char* filename, const char* mode,  int* err,  
-                                            LOG_PARAMS);
+                                                       LOG_PARAMS);
 
 
 int _close_file(FILE* fp, LOG_PARAMS);

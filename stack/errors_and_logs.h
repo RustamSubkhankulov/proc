@@ -3,10 +3,10 @@
 #include <assert.h>
 #include <stdint.h>
 
-#include "../stack/stackconfig.h"
 #include "stack.h"
 #include "errors.h"
 #include "../assembler/processor_general.h"
+#include "../assembler/config.h"
 
 //===================================================================
 
@@ -18,7 +18,8 @@
 //===================================================================
 
 #define LOG_PARAMS \
-        const char* func_name, const char* file_name, int line, FILE* logs_file
+        const char* func_name, const char* file_name, int line, \
+                                               FILE* logs_file
 
 #define LOG_ARGS \
         __FUNCTION__, __FILE__, __LINE__, logs_file
@@ -26,13 +27,36 @@
 #define LOGS_ARGS_USE \
         func_name, file_name, line, logs_file
 
-#define stack_ptr_check(stack)                                       \
-                                                                     \
-        if (stack == NULL) {                                         \
-            set_global_error_code(INV_STACK_PTR);                    \
-            global_error_process();                                  \
-            return -1;                                               \
-        };
+//===================================================================
+
+#define stack_ptr_check(stack) {                                    \
+                                                                	\
+        if (stack == NULL) {                                        \
+            set_global_error_code(INV_STACK_PTR);                   \
+            global_error_process();                                 \
+            return -1;                                              \
+        };                                                          \
+}
+
+//===================================================================
+
+#define set_and_process_err(error_code) {                           \
+                                                                	\
+    set_global_error_code(error_code);                              \
+    global_error_process();                                         \
+                                                                    \
+    return -1;                                                      \
+    }      
+
+//===================================================================
+
+#define stack_error(number, stack) {                         		\
+						                                            \
+	set_stack_error_code(number, stack);							\
+	stack_error_process(stack);										\
+}
+
+//===================================================================
 
 #ifdef DEBUG
 
@@ -56,20 +80,42 @@
 
 #endif 
 
-#ifdef LOGS
+//===================================================================
 
-    #define log_report() \
-            log_report_(LOGS_ARGS_USE, __FUNCTION__)
+#ifdef TEXT_LOGS
 
-    #define smpl_log_report() \
-            smpl_log_report_(FUNC_FILE_LINE_GET_ARGS)
+	#define text_log_report() \
+			log_report_(LOGS_ARGS_USE, __FUNCTION__)
+
+	#define text_smpl_log_report() \
+			smpl_log_report_(LOG_ARGS)
 
 #else
 
-    #define log_report() ""
-    #define smpl_log_report() ""
+	#define text_log_report() ""
+
+	#define smpl_text_log_report() ""
 
 #endif
+
+//===================================================================
+
+#ifdef STACK_LOGS
+
+    #define stack_log_report() \
+            log_report_(LOGS_ARGS_USE, __FUNCTION__)
+
+    #define stack_smpl_log_report() \
+            smpl_log_report_(LOG_ARGS)
+
+#else
+
+    #define stack_log_report() ""
+    #define stack_smpl_log_report() ""
+
+#endif
+
+//===================================================================
 
 #ifdef ASM_LOGS
 
@@ -87,6 +133,8 @@
 
 #endif
 
+//===================================================================
+
 #ifdef PROC_LOGS
 
         #define proc_log_report() \
@@ -103,6 +151,8 @@
 
 #endif
 
+//===================================================================
+
 #ifdef DISASM_LOGS
 
         #define disasm_log_report() \
@@ -118,6 +168,7 @@
         #define disasm_smpl_log_report() ""
 
 #endif
+
 //===================================================================
 
 FILE* open_log_file(const char* filename);
@@ -156,7 +207,7 @@ int log_report_parameters_check(LOG_PARAMS);
 
 int smpl_log_report_(LOG_PARAMS);
 
-//===========================================================================================
+//===================================================================
 
 /// Sets up global error code
 /// 
@@ -186,7 +237,7 @@ int global_error_process_(LOG_PARAMS);
 /// @return 0 if work ends successfully and -1 if error occures
 int global_error_report(LOG_PARAMS);
 
-//===========================================================================================
+//===================================================================
 
 /// Sets up stack error code
 /// 
@@ -213,13 +264,12 @@ int stack_error_process_(LOG_PARAMS, stack* stack);
 /// Stack error report
 /// 
 /// Prints in error output file by FILE* error_file 
-/// Prints code of stack error,  file, function names and number of the line where 
-/// global_error_process was called\
+/// Prints code of stack error,  file, function names and number of the line where global_error_process was called
 /// @param stack* stack - stack structure pointer 
 /// @return 0 if work ends successfully and -1 if error occures
 int stack_error_report(LOG_PARAMS, stack* stack);
 
-//===========================================================================================
+//===================================================================
 
 /// Description of the error
 /// 
@@ -231,15 +281,6 @@ const char* get_error_descr(int error_code);
 //===================================================================
 
 #define $ if (err_val == -1) return -1;
-
-//===================================================================
-
-#define set_and_process_err(error_code) {                           \
-                                                                    \
-    set_global_error_code(error_code);                              \
-    global_error_process();                                         \
-                                                                    \
-    return -1;                                                      \
-    }                                                               
+                                                      
 
 

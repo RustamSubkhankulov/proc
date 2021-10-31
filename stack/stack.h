@@ -1,6 +1,7 @@
 #pragma once
 
 #include "errors_and_logs.h"
+#include "../assembler/processor_general.h"
 
 typedef struct stack stack;
 
@@ -88,6 +89,9 @@ struct stack_origin {
         stack_push_(stack, value, LOG_ARGS)
 
 //===================================================================
+
+#define stack_canary_validation(stack) \
+       _stack_canary_validation(stack, LOG_ARGS)
 
 #define stack_empty_check(stack) \
         stack_empty_check_(stack, LOG_ARGS)
@@ -241,8 +245,6 @@ static int stack_set_canaries_(stack* stack, LOG_PARAMS);
 /// Saves hash of the stack structure and stack data in stack
 /// base_hash and data_hash after changes in stack
 static int stack_save_hash_(stack* stack, LOG_PARAMS);
-
-static int64_t get_hash_(char* base, unsigned int len, LOG_PARAMS);
 
 static int stack_data_hash_check_(stack* stack, LOG_PARAMS);
 

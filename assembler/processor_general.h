@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 
+#include "config.h"
 
 //===================================================================
 
@@ -15,17 +16,11 @@
 
 #define ASCII_OFFSET 96
 
-#define REGISTER_SIZE 8
-
-#define RAM_SIZE 1024 
-
-#define PRECISION 1e-3
-
 //===================================================================
 
-#define SIGN 'SRR!'
+#define SIGN 559108690
 
-#define VERSION 1
+#define VERSION 5
 
 //===================================================================
 
@@ -53,59 +48,8 @@ enum operations {
 
 //===================================================================
 
-//GLOBAL
-
-#define DEBUG
-
-//===================================================================
-
-//ASSEMBLER OPTIONS
-
-#define ASM_DEBUG
-
-#define ASM_LOGS
-
-#define LISTING
-
-#define ASM_MAX_CODE_SIZE 200
-
-#define START_LABELS_NUMBER 10
-
-#define UD_JUMPS_NUMBER 10
-
-#define STRING_JUMPS_NUMBER 10
-
-#define OPERATION_NAME_BUF_SIZE 10
-
 static FILE* asm_listing_file = NULL;
 
-static const char* ASM_LISTING_FILENAME = "text_files/listing.txt";
-
-//LABELS
-
-#define LABEL_NAME_SIZE 15
-
 //===================================================================
-
-//DISASSEMBLER OPTIONS
-
-#define DISASM_DEBUG
-
-#define DISASM_LOGS
-
-#define DISASM_LISTING
-
 
 static FILE* disasm_listing_file = NULL;
-
-static const char* DISASM_LISTING_FILENAME = "text_files/disasm_listing.txt";
-
-//===================================================================
-
-//PROCESSOR
-
-#define PROC_LOGS
-
-#define PROC_DEBUG
-
-//===================================================================
